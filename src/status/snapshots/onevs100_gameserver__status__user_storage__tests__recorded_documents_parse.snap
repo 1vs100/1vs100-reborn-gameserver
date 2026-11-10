@@ -1,0 +1,26 @@
+---
+source: src/status/user_storage.rs
+expression: parsed
+---
+[
+    UserStorage {
+        lifetime_score: Some(
+            Points(
+                110271,
+            ),
+        ),
+        privacy: Some(
+            Public,
+        ),
+    },
+    UserStorage {
+        lifetime_score: Some(
+            Points(
+                4517,
+            ),
+        ),
+        privacy: Some(
+            Public,
+        ),
+    },
+]

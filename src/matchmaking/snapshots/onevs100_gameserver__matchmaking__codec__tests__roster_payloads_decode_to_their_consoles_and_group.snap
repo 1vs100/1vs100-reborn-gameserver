@@ -1,0 +1,16 @@
+---
+source: src/matchmaking/codec.rs
+expression: "shown.join(\"\\n\")"
+---
+two consoles: Ok(Roster { consoles: [[RosterPlayer { xuid: Xuid(1), gamertag: "A0" }, RosterPlayer { xuid: Xuid(2), gamertag: "A1" }], [RosterPlayer { xuid: Xuid(3), gamertag: "B0" }]], group: Some(GroupId(1)) })
+no group: Ok(Roster { consoles: [[RosterPlayer { xuid: Xuid(1), gamertag: "A" }]], group: None })
+no consoles: Ok(Roster { consoles: [], group: None })
+the console count cut short: Err(Truncated { what: "console count" })
+the player count cut short: Err(Truncated { what: "player count" })
+the xuid cut short: Err(Truncated { what: "xuid" })
+the string length cut short: Err(Truncated { what: "string length" })
+the string cut short: Err(Truncated { what: "string" })
+a string too long: Err(StringTooLong { len: 257 })
+a gamertag that is not UTF-8: Err(BadUtf8)
+the group cut short: Err(Truncated { what: "group" })
+trailing bytes: Err(TrailingBytes { len: 1 })

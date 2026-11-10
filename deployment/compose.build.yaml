@@ -1,0 +1,24 @@
+# Builds the images from this checkout instead of pulling them:
+# docker compose --env-file .env -f deployment/compose.yaml -f deployment/compose.build.yaml up -d --build
+# GAMESERVER_BUILD_COMMIT=$(git rev-parse HEAD) docker compose ... up -d --build
+
+# Every image builds the same Rust stage, so all take the same arguments.
+x-build-args: &build-args
+  GAMESERVER_BUILD_COMMIT: ${GAMESERVER_BUILD_COMMIT:-}
+
+services:
+  gameserver:
+    image: onevs100-gameserver:local
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: gameserver
+      args: *build-args
+
+  nginx:
+    image: onevs100-nginx:local
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: nginx
+      args: *build-args

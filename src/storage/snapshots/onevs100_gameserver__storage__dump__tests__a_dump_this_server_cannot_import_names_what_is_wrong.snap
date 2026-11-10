@@ -1,0 +1,32 @@
+---
+source: src/storage/dump.rs
+expression: shown
+---
+[
+    UnsupportedVersion {
+        found: 2,
+        supported: 1,
+    },
+    NonFinite {
+        key: "bad",
+    },
+    InvalidShow {
+        session_id: "session",
+        problem: UnknownKind,
+    },
+    InvalidBank {
+        source: Version {
+            found: 2,
+            expected: 1,
+        },
+    },
+    IncompletePlayer {
+        xuid: Xuid(
+            16140908281431895321,
+        ),
+    },
+    InvalidField {
+        field: "first_seen",
+        value: "9223372036854775807",
+    },
+]

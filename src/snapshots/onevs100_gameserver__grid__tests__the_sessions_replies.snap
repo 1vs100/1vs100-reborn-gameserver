@@ -1,0 +1,156 @@
+---
+source: src/grid.rs
+expression: "format!(\"1317:\\n{reply}\\n1149:\\n{retail}\")"
+---
+1317:
+<?xml version="1.0" encoding="utf-8"?>
+<Sessions>
+<Session>
+<XboxTitleId>584A07D1</XboxTitleId>
+<EpisodeGroupId>00000000-0000-0000-0000-000000000000</EpisodeGroupId>
+<StartTimeUtc>2026-09-27T12:02:00Z</StartTimeUtc>
+<EndTimeUtc>2026-09-27T14:00:00Z</EndTimeUtc>
+<SessionId>00000000-0000-0000-0000-000000000001</SessionId>
+<EpisodeId>00000000-0000-0000-0000-000000000002</EpisodeId>
+<ChannelName>1vs100</ChannelName>
+<EpisodeGroupName>OneVsLive</EpisodeGroupName>
+<NameShort>1 vs 100</NameShort>
+<NameFull>1 vs 100 Live</NameFull>
+<TitleSponsor/>
+<BusinessModel/>
+<Packages>
+<Package>
+<MarketplaceOfferId>00000000000000000000000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000000000000000000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000000000000000000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>0</Priority>
+<MarketplaceMediaType>0</MarketplaceMediaType>
+<MarketplaceContentId>988237803712CB87513237A914D367C6AAEE2410</MarketplaceContentId>
+<Name>1 vs 100 Launch</Name>
+</Package>
+<Package>
+<MarketplaceOfferId>00000000000000000000000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000000000000000000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000000000000000000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>2</Priority>
+<MarketplaceMediaType>0</MarketplaceMediaType>
+<MarketplaceContentId>77205BC1241C708A8A10B7303AF90E5EDD0286B1</MarketplaceContentId>
+<Name>1 vs 100 Show</Name>
+</Package>
+<Package>
+<MarketplaceOfferId>00000000000000000000000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000000000000000000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000000000000000000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>2</Priority>
+<MarketplaceMediaType>0</MarketplaceMediaType>
+<MarketplaceContentId>83136FF343124795DC1806A2DB044476589BD5C0</MarketplaceContentId>
+<Name>1 vs 100 Episode</Name>
+</Package>
+</Packages>
+</Session>
+</Sessions>
+
+1149:
+<?xml version="1.0" encoding="utf-8"?>
+<Sessions>
+<ChannelName>1vs100</ChannelName>
+  <Session>
+<ChannelName>1vs100</ChannelName>
+<SessionId>00000000-0000-0000-0000-000000000001</SessionId>
+<TitleType>1</TitleType>
+<EpisodeGroupId>00000000-0000-0000-0000-000000000000</EpisodeGroupId>
+<EpisodeId>00000000-0000-0000-0000-000000000002</EpisodeId>
+<XboxTitleId>584A07D1</XboxTitleId>
+<PreviewUrl>http://192.168.42.1/grid/v1/media/preview</PreviewUrl>
+<MediaUrl>http://192.168.42.1/grid/v1/media/media</MediaUrl>
+<ThumbnailUrl>http://192.168.42.1/grid/v1/media/thumbnail</ThumbnailUrl>
+<HasRewards>False</HasRewards>
+<IsFeaturedItem>False</IsFeaturedItem>
+<IsNew>False</IsNew>
+<StartTimeUtc>2026-09-27T12:02:00Z</StartTimeUtc>
+<EndTimeUtc>2026-09-27T14:00:00Z</EndTimeUtc>
+<NameShort>1 vs 100</NameShort>
+<EpisodeGroupName>OneVsLive</EpisodeGroupName>
+<IsPublished>True</IsPublished>
+<Packages>
+      <Package>
+<MarketplaceOfferId>00000000-0000-0000-0000-000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000-0000-0000-0000-000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000-0000-0000-0000-000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>0</Priority>
+<MarketplaceMediaType>18</MarketplaceMediaType>
+<MarketplaceContentId>988237803712CB87513237A914D367C6AAEE2410</MarketplaceContentId>
+</Package>
+      <Package>
+<MarketplaceOfferId>00000000-0000-0000-0000-000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000-0000-0000-0000-000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000-0000-0000-0000-000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>2</Priority>
+<MarketplaceMediaType>18</MarketplaceMediaType>
+<MarketplaceContentId>77205BC1241C708A8A10B7303AF90E5EDD0286B1</MarketplaceContentId>
+</Package>
+      <Package>
+<MarketplaceOfferId>00000000-0000-0000-0000-000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000-0000-0000-0000-000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000-0000-0000-0000-000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>2</Priority>
+<MarketplaceMediaType>18</MarketplaceMediaType>
+<MarketplaceContentId>83136FF343124795DC1806A2DB044476589BD5C0</MarketplaceContentId>
+</Package>
+</Packages>
+</Session>
+  <Session>
+<ChannelName>1vs100</ChannelName>
+<SessionId>00000000-0000-0000-0000-000000000003</SessionId>
+<TitleType>1</TitleType>
+<EpisodeGroupId>00000000-0000-0000-0000-000000000000</EpisodeGroupId>
+<EpisodeId>00000000-0000-0000-0000-000000000002</EpisodeId>
+<XboxTitleId>584A07D1</XboxTitleId>
+<PreviewUrl>http://192.168.42.1/grid/v1/media/preview</PreviewUrl>
+<MediaUrl>http://192.168.42.1/grid/v1/media/media</MediaUrl>
+<ThumbnailUrl>http://192.168.42.1/grid/v1/media/thumbnail</ThumbnailUrl>
+<HasRewards>False</HasRewards>
+<IsFeaturedItem>False</IsFeaturedItem>
+<IsNew>False</IsNew>
+<StartTimeUtc>2026-09-27T14:02:00Z</StartTimeUtc>
+<EndTimeUtc>2026-09-27T16:00:00Z</EndTimeUtc>
+<NameShort>1 vs 100</NameShort>
+<EpisodeGroupName>OneVsLive</EpisodeGroupName>
+<IsPublished>True</IsPublished>
+<Packages>
+      <Package>
+<MarketplaceOfferId>00000000-0000-0000-0000-000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000-0000-0000-0000-000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000-0000-0000-0000-000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>0</Priority>
+<MarketplaceMediaType>18</MarketplaceMediaType>
+<MarketplaceContentId>988237803712CB87513237A914D367C6AAEE2410</MarketplaceContentId>
+</Package>
+      <Package>
+<MarketplaceOfferId>00000000-0000-0000-0000-000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000-0000-0000-0000-000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000-0000-0000-0000-000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>2</Priority>
+<MarketplaceMediaType>18</MarketplaceMediaType>
+<MarketplaceContentId>77205BC1241C708A8A10B7303AF90E5EDD0286B1</MarketplaceContentId>
+</Package>
+      <Package>
+<MarketplaceOfferId>00000000-0000-0000-0000-000000000000</MarketplaceOfferId>
+<MarketplaceMediaId>00000000-0000-0000-0000-000000000000</MarketplaceMediaId>
+<MarketplaceMediaInstanceId>00000000-0000-0000-0000-000000000000</MarketplaceMediaInstanceId>
+<InstallSizeInKB>0</InstallSizeInKB>
+<Priority>2</Priority>
+<MarketplaceMediaType>18</MarketplaceMediaType>
+<MarketplaceContentId>83136FF343124795DC1806A2DB044476589BD5C0</MarketplaceContentId>
+</Package>
+</Packages>
+</Session>
+</Sessions>

@@ -1,0 +1,8 @@
+---
+source: src/matchmaking/codec.rs
+expression: "shown.join(\"\\n\")"
+---
+after an announce: type 7, [00, 00]
+first frame: type 4, [00, 00, 00, 00]
+another protocol version: InvalidData: frame of protocol version 1
+no frame: UnexpectedEof: unexpected end of file

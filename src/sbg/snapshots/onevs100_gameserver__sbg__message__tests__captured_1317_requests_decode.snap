@@ -1,0 +1,17 @@
+---
+source: src/sbg/message.rs
+expression: "shown(FIXTURE_1317, &labels)"
+---
+register: Register
+heartbeat: Heartbeat
+store_get_game_state: Request { key: v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.GameState, action: Get, execute_at: Some(1790383969041) }
+store_get_config: Request { key: v3.Setup.MGS.1vs100.Store.Config, action: Get, execute_at: None }
+store_get_question_bank_reset_id: Request { key: v3.Setup.MGS.1vs100.Store.QuestionBank.00000000-0000-0000-0000-000000000000.Locale.en-us.Difficulty.1.ResetID, action: Get, execute_at: Some(1790386770590) }
+store_get_the_mob: Request { key: v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.PRIMETIME.183.TheMob, action: Get, execute_at: Some(1790386772590) }
+store_set_user_error: Request { key: v3.Session.MGS.1vs100.Log.UserError.0, action: Set(544 bytes "<XsorObject>errorName: SBG_S_OK (StartupGood), e" .. "k.lua.135,</XsorObject>\0"), execute_at: None }
+store_set_the_mob_compressed: Request { key: v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.PRIMETIME.183.TheMob, action: Set(1586 bytes "<XsorObject><TheOne><Manifest type=\"userdata\" su" .. "e></TheOne></XsorObject>"), execute_at: None }
+user_get_user_storage: Request { key: v3.Season.MGS.1vs100.UserStore.UserStorage, action: UserGet { xuid: Xuid(16140909857506937655) }, execute_at: None }
+sum_add_player_count: Request { key: v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.183.RSTotalPlayerCount, action: SumAdd(1.0), execute_at: None }
+sum_get_player_count: Request { key: v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.183.RSTotalPlayerCount, action: SumGet, execute_at: None }
+top_n_post_the_one: Request { key: v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.183.TheOne, action: TopNPost(capacity 1, score -1.501064, 41 bytes "<Metadata>16140909857506937655</Metadata>"), execute_at: None }
+top_n_get_the_one: Request { key: v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.183.TheOne, action: TopNGet, execute_at: None }

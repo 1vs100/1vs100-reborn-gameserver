@@ -1,0 +1,51 @@
+name: cd
+
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.event.workflow_run.conclusion == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: linux, arch: x64, runner: ubuntu-latest }
+          - { os: linux, arch: arm64, runner: ubuntu-24.04-arm }
+          - { os: macos, arch: x64, runner: macos-15-intel }
+          - { os: macos, arch: arm64, runner: macos-latest }
+          - { os: windows, arch: x64, runner: windows-latest }
+          - { os: windows, arch: arm64, runner: windows-11-arm }
+    runs-on: ${{ matrix.runner }}
+    name: ${{ matrix.os }}-${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - run: cargo build --release --locked --bin onevs100-gameserver
+
+      - name: Package binary
+        shell: bash
+        run: |
+          mkdir dist
+          if [[ "${{ matrix.os }}" == "windows" ]]; then
+            cp target/release/onevs100-gameserver.exe dist/
+          else
+            cp target/release/onevs100-gameserver dist/
+          fi
+          tar -czf "onevs100-gameserver-${{ matrix.os }}-${{ matrix.arch }}.tar.gz" -C dist .
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: onevs100-gameserver-${{ matrix.os }}-${{ matrix.arch }}
+          path: onevs100-gameserver-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
+          if-no-files-found: error
+          retention-days: 7

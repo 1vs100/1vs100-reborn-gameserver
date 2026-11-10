@@ -1,0 +1,12 @@
+---
+source: src/sbg/replay.rs
+expression: "shown(user_storage, 8)"
+---
+    99332 conn=1 in cookie=0x0068 user get v3.Season.MGS.1vs100.UserStore.UserStorage xuid=e0000601484d4b37
+    99332 conn=1 out cookie=0x0068 kind=0x82 status=200 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="SBG.Act
+   365424 conn=1 in cookie=0x00ae user set v3.Season.MGS.1vs100.UserStore.UserStorage xuid=e0000601484d4b37 <xsor:object xmlns:xsor="http://schemas.xbox.com/xso
+   365424 conn=1 out cookie=0x00ae kind=0x82 status=200 
+   415972 conn=1 in cookie=0x00c8 user set v3.Season.MGS.1vs100.UserStore.UserStorage xuid=e0000601484d4b37 <xsor:object xmlns:xsor="http://schemas.xbox.com/xso
+   415973 conn=1 out cookie=0x00c8 kind=0x82 status=200 
+   464168 conn=1 in cookie=0x00e2 user set v3.Season.MGS.1vs100.UserStore.UserStorage xuid=e0000601484d4b37 <xsor:object xmlns:xsor="http://schemas.xbox.com/xso
+   464168 conn=1 out cookie=0x00e2 kind=0x82 status=200

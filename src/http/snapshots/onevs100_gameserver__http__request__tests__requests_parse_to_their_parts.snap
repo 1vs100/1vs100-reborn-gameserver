@@ -1,0 +1,19 @@
+---
+source: src/http/request.rs
+expression: "shown_lines.join(\"\\n\")"
+---
+a Grid sessions get: GET /grid/v1/sessions/1vs100/en-US/20261023 (path /grid/v1/sessions/1vs100/en-US/20261023, host Some("192.0.2.10"), 0 body bytes) takes 74 bytes
+a get with a query: GET /grid/v1/sessions/1vs100/en-US/20261023?lang=en-US (path /grid/v1/sessions/1vs100/en-US/20261023, host Some("grid.example:8080"), 0 body bytes) takes 92 bytes
+no host header: GET /status/v1/live (path /status/v1/live, host None, 0 body bytes) takes 45 bytes
+an empty host: GET /status/v1/live (path /status/v1/live, host None, 0 body bytes) takes 41 bytes
+a post with its body: POST /admin/v1/questions (path /admin/v1/questions, host Some("127.0.0.1:8080"), 5 body bytes) takes 83 bytes
+lower-case headers over HTTP/1.0: GET /x (path /x, host Some("h"), 0 body bytes) takes 28 bytes
+a body that is not all here: BadRequest
+no head end: BadRequest
+a version no listener speaks: BadRequest
+a target that is no path: BadRequest
+a request line of four words: BadRequest
+two content lengths: BadRequest
+a transfer encoding: BadRequest
+a header with no colon: BadRequest
+a request that is no text: BadRequest

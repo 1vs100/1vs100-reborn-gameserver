@@ -1,0 +1,7 @@
+/target
+/logs
+!/data/.gitkeep
+/data
+# Production env
+.env
+/deployment/nginx/run

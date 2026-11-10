@@ -1,0 +1,87 @@
+# docker compose --env-file .env -f deployment/compose.yaml up -d   (or: podman compose ...)
+# Runs the images CI publishes from main. compose.build.yaml builds them from source instead.
+# Needs a `.env` in the repo root (copy .env.example). `--env-file` gives the game ports their
+# address, GAMESERVER_BIND, where the consoles reach them. The host's nginx owns port 80 and
+# forwards it to the nginx service (deployment/host-nginx.conf).
+# A fixed project name keeps the volume names wherever the files are.
+name: onevs100
+
+x-common: &common
+  env_file: ../.env
+  restart: unless-stopped
+
+services:
+  gameserver:
+    <<: *common
+    image: ghcr.io/1vs100/1vs100-reborn-gameserver-gameserver:latest
+    # The game ports bind inside the container; GAMESERVER_BIND stays the address the consoles
+    # are told about. HTTP, admin and status are reached by nginx on the compose network only.
+    environment:
+      GAMESERVER_LISTEN_IP: 0.0.0.0
+      GAMESERVER_HTTP_ADDR: 0.0.0.0:8090
+      GAMESERVER_ADMIN_ADDR: 0.0.0.0:8081
+      GAMESERVER_STATUS_ADDR: 0.0.0.0:8082
+      GAMESERVER_DATABASE_URL: postgres://onevs100@postgres/onevs100
+      GAMESERVER_LOG_DIR: /logs
+    # SBG, matchmaking, ads, and SNTP for both builds: 123 for 1317, 1123 for 1149.
+    ports:
+      - ${GAMESERVER_BIND:?set GAMESERVER_BIND in .env and pass --env-file .env}:1000:1000
+      - ${GAMESERVER_BIND}:1001:1001
+      - ${GAMESERVER_BIND}:1002:1002
+      - ${GAMESERVER_BIND}:123:123/udp
+      - ${GAMESERVER_BIND}:1123:1123/udp
+    volumes:
+      - logs:/logs
+    networks: [default, database]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+
+  # Persistent data. Only the gameserver shares its network, so the database trusts every
+  # connection and needs no password. It publishes no port. The gameserver connects as the
+  # database's owner, which the image makes a superuser.
+  postgres:
+    <<: *common
+    image: postgres:17
+    environment:
+      POSTGRES_USER: onevs100
+      POSTGRES_DB: onevs100
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks: [database]
+    healthcheck:
+      test: [CMD, pg_isready, -h, 127.0.0.1, -U, onevs100, -d, onevs100]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # The public site and the consoles' Grid requests for the host's nginx to forward to, and the
+  # admin UI. Both are published on loopback unless .env says otherwise.
+  nginx:
+    <<: *common
+    image: ghcr.io/1vs100/1vs100-reborn-gameserver-nginx:latest
+    depends_on: [gameserver]
+    environment:
+      GAMESERVER_HTTP_ADDR: gameserver:8090
+      GAMESERVER_ADMIN_ADDR: gameserver:8081
+      GAMESERVER_STATUS_ADDR: gameserver:8082
+      GAMESERVER_SITE_LISTEN: 0.0.0.0:8083
+      GAMESERVER_UI_LISTEN: 0.0.0.0:8080
+    ports:
+      - ${GAMESERVER_SITE_LISTEN:-127.0.0.1:8083}:8083
+      - ${GAMESERVER_UI_LISTEN:-127.0.0.1:8080}:8080
+    # nginx starts as root, then hands its temp directories to its worker user.
+    cap_drop: [ALL]
+    cap_add: [CHOWN, SETUID, SETGID]
+
+volumes:
+  postgres:
+  logs:
+
+networks:
+  default:
+  database:
+    internal: true

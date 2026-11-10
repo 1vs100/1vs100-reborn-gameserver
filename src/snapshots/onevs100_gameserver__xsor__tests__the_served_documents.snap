@@ -1,0 +1,475 @@
+---
+source: src/xsor.rs
+expression: "shown.join(\"\\n\")"
+---
+config:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="Config" type="table">
+<MinGameVersionNumber type="float">2.02</MinGameVersionNumber>
+<SeasonStartDate>2026-09-16T01:00:00Z</SeasonStartDate>
+<SeasonFinale type="boolean">false</SeasonFinale>
+<LegalURL>http://www.1vs100.com/legal</LegalURL>
+<hostingPercentage type="integer">100</hostingPercentage>
+<joiningPercentage type="integer">0</joiningPercentage>
+<matchmakeDelayMin type="integer">1</matchmakeDelayMin>
+<matchmakeDelayMax type="integer">5</matchmakeDelayMax>
+<maxAttemptsPerTry type="integer">3</maxAttemptsPerTry>
+<MATCHMAKE_MAXQUALIFICATION type="integer">100</MATCHMAKE_MAXQUALIFICATION>
+<PT_MINIMUM_TIME_TILL_EVENT_END type="integer">300</PT_MINIMUM_TIME_TILL_EVENT_END>
+<QALoopStatTime type="integer">10</QALoopStatTime>
+<ACHIEVEMENT_TPS_TUNING_DIAL type="integer">1</ACHIEVEMENT_TPS_TUNING_DIAL>
+<oneEligibleRTT type="integer">200</oneEligibleRTT>
+<mobEligibleRTT type="integer">200</mobEligibleRTT>
+<oneEligibleBWUp type="integer">80000</oneEligibleBWUp>
+<mobEligibleBWUp type="integer">80000</mobEligibleBWUp>
+<oneEligibleBWDown type="integer">80000</oneEligibleBWDown>
+<mobEligibleBWDown type="integer">80000</mobEligibleBWDown>
+<cutHostAudioBWDown type="integer">60000</cutHostAudioBWDown>
+<warnRTT type="integer">350</warnRTT>
+<warnBWDown type="integer">80000</warnBWDown>
+<warnBWUp type="integer">64000</warnBWUp>
+<maxJitterMs type="integer">999</maxJitterMs>
+<jitterPingThreshold type="integer">1199</jitterPingThreshold>
+<matchmakeEndGameShutdown type="integer">0</matchmakeEndGameShutdown>
+<msgBuckets type="table">
+<BWUp type="table">
+<XsorItem type="integer">20000</XsorItem>
+<XsorItem type="integer">40000</XsorItem>
+<XsorItem type="integer">120000</XsorItem>
+</BWUp>
+<BWDown type="table">
+<XsorItem type="integer">32000</XsorItem>
+<XsorItem type="integer">40000</XsorItem>
+<XsorItem type="integer">120000</XsorItem>
+</BWDown>
+<RTT type="table">
+<XsorItem type="integer">150</XsorItem>
+<XsorItem type="integer">300</XsorItem>
+<XsorItem type="integer">400</XsorItem>
+</RTT>
+</msgBuckets>
+<PTQuestionProgression type="table">
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+</PTQuestionProgression>
+<EPQuestionProgression type="table">
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+</EPQuestionProgression>
+</xsor:object>
+a config cut off 45 minutes before the show ends:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="Config" type="table">
+<MinGameVersionNumber type="float">2.02</MinGameVersionNumber>
+<SeasonStartDate>2026-09-16T01:00:00Z</SeasonStartDate>
+<SeasonFinale type="boolean">false</SeasonFinale>
+<LegalURL>http://www.1vs100.com/legal</LegalURL>
+<hostingPercentage type="integer">9</hostingPercentage>
+<joiningPercentage type="integer">7</joiningPercentage>
+<matchmakeDelayMin type="integer">1</matchmakeDelayMin>
+<matchmakeDelayMax type="integer">5</matchmakeDelayMax>
+<maxAttemptsPerTry type="integer">3</maxAttemptsPerTry>
+<MATCHMAKE_MAXQUALIFICATION type="integer">100</MATCHMAKE_MAXQUALIFICATION>
+<PT_MINIMUM_TIME_TILL_EVENT_END type="integer">45</PT_MINIMUM_TIME_TILL_EVENT_END>
+<QALoopStatTime type="integer">10</QALoopStatTime>
+<ACHIEVEMENT_TPS_TUNING_DIAL type="integer">1</ACHIEVEMENT_TPS_TUNING_DIAL>
+<oneEligibleRTT type="integer">200</oneEligibleRTT>
+<mobEligibleRTT type="integer">200</mobEligibleRTT>
+<oneEligibleBWUp type="integer">80000</oneEligibleBWUp>
+<mobEligibleBWUp type="integer">80000</mobEligibleBWUp>
+<oneEligibleBWDown type="integer">80000</oneEligibleBWDown>
+<mobEligibleBWDown type="integer">80000</mobEligibleBWDown>
+<cutHostAudioBWDown type="integer">60000</cutHostAudioBWDown>
+<warnRTT type="integer">350</warnRTT>
+<warnBWDown type="integer">80000</warnBWDown>
+<warnBWUp type="integer">64000</warnBWUp>
+<maxJitterMs type="integer">999</maxJitterMs>
+<jitterPingThreshold type="integer">1199</jitterPingThreshold>
+<msgBuckets type="table">
+<BWUp type="table">
+<XsorItem type="integer">20000</XsorItem>
+<XsorItem type="integer">40000</XsorItem>
+<XsorItem type="integer">120000</XsorItem>
+</BWUp>
+<BWDown type="table">
+<XsorItem type="integer">32000</XsorItem>
+<XsorItem type="integer">40000</XsorItem>
+<XsorItem type="integer">120000</XsorItem>
+</BWDown>
+<RTT type="table">
+<XsorItem type="integer">150</XsorItem>
+<XsorItem type="integer">300</XsorItem>
+<XsorItem type="integer">400</XsorItem>
+</RTT>
+</msgBuckets>
+<PTQuestionProgression type="table">
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+</PTQuestionProgression>
+<EPQuestionProgression type="table">
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">1</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">2</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+<XsorItem type="integer">4</XsorItem>
+<XsorItem type="integer">5</XsorItem>
+<XsorItem type="integer">3</XsorItem>
+</EPQuestionProgression>
+</xsor:object>
+prizing matrix:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="PrizingMatrix" type="table">
+<PTOneT0 type="integer">0</PTOneT0>
+<PTMobPT0 type="integer">0</PTMobPT0>
+<PTMobGT0>n0g4m3</PTMobGT0>
+<PTOneT1 type="integer">160</PTOneT1>
+<PTMobPT1 type="integer">0</PTMobPT1>
+<PTMobGT1>n0g4m3</PTMobGT1>
+<PTOneT2 type="integer">300</PTOneT2>
+<PTMobPT2 type="integer">0</PTMobPT2>
+<PTMobGT2>n0g4m3</PTMobGT2>
+<PTOneT3 type="integer">600</PTOneT3>
+<PTMobPT3 type="integer">0</PTMobPT3>
+<PTMobGT3>n0g4m3</PTMobGT3>
+<PTOneT4 type="integer">800</PTOneT4>
+<PTMobPT4 type="integer">0</PTMobPT4>
+<PTMobGT4>SomeGame</PTMobGT4>
+<PTOneT5 type="integer">1200</PTOneT5>
+<PTMobPT5 type="integer">0</PTMobPT5>
+<PTMobGT5>SomeGame</PTMobGT5>
+<PTOneT6 type="integer">2000</PTOneT6>
+<PTMobPT6 type="integer">80</PTMobPT6>
+<PTMobGT6>SomeGame</PTMobGT6>
+<PTOneT7 type="integer">3000</PTOneT7>
+<PTMobPT7 type="integer">160</PTMobPT7>
+<PTMobGT7>SomeGame</PTMobGT7>
+<PTOneT8 type="integer">5000</PTOneT8>
+<PTMobPT8 type="integer">400</PTMobPT8>
+<PTMobGT8>SomeGame</PTMobGT8>
+<PTOneT9 type="integer">6000</PTOneT9>
+<PTMobPT9 type="integer">800</PTMobPT9>
+<PTMobGT9>SomeGame</PTMobGT9>
+<PTOneT10 type="integer">10000</PTOneT10>
+<PTMobPT10 type="integer">0</PTMobPT10>
+<PTMobGT10>n0g4m3</PTMobGT10>
+<PTTop1>SomeGame</PTTop1>
+<PTTop2>SomeGame</PTTop2>
+<PTTop3>SomeGame</PTTop3>
+</xsor:object>
+launch data, Primetime, numbers:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
+<EpisodeId>episode</EpisodeId>
+<LiveStreamPathURI type="table">
+<en-us>http://192.0.2.10/livehost.mp3</en-us>
+</LiveStreamPathURI>
+<StartTime>2026-10-23T20:00:00.000Z</StartTime>
+<EndTime>2026-10-23T21:00:00.000Z</EndTime>
+<Duration type="integer">60</Duration>
+<GameType type="integer">1</GameType>
+<Theme type="table">
+<Name>
+</Name>
+<LocalizedNames type="table">
+</LocalizedNames>
+</Theme>
+<EpisodeGroup>
+</EpisodeGroup>
+<DesignerKnob type="integer">0</DesignerKnob>
+<MobBucketSize type="integer">5</MobBucketSize>
+<SeasonSponsor type="table">
+<en-us>Microsoft</en-us>
+</SeasonSponsor>
+<EpisodeSponsor type="table">
+<en-us>Microsoft</en-us>
+</EpisodeSponsor>
+</xsor:object>
+launch data, Extended Play, strings:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
+<EpisodeId>episode</EpisodeId>
+<LiveStreamPathURI type="table">
+<en-us>http://192.0.2.10/livehost.mp3</en-us>
+</LiveStreamPathURI>
+<StartTime>2026-10-23T20:00:00.000Z</StartTime>
+<EndTime>2026-10-23T22:00:00.000Z</EndTime>
+<Duration>120</Duration>
+<GameType>2</GameType>
+<Theme type="table">
+<Name>
+</Name>
+<LocalizedNames type="table">
+</LocalizedNames>
+</Theme>
+<EpisodeGroup>
+</EpisodeGroup>
+<DesignerKnob type="integer">0</DesignerKnob>
+<MobBucketSize type="integer">5</MobBucketSize>
+<SeasonSponsor type="table">
+<en-us>Microsoft</en-us>
+</SeasonSponsor>
+<EpisodeSponsor type="table">
+<en-us>Microsoft</en-us>
+</EpisodeSponsor>
+</xsor:object>
+launch data, a special:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
+<EpisodeId>episode</EpisodeId>
+<LiveStreamPathURI type="table">
+<en-us>http://192.0.2.10/livehost.mp3</en-us>
+</LiveStreamPathURI>
+<StartTime>2026-10-23T20:00:00.000Z</StartTime>
+<EndTime>2026-10-23T21:30:00.000Z</EndTime>
+<Duration type="integer">90</Duration>
+<GameType type="integer">1</GameType>
+<Theme type="table">
+<Name>Special</Name>
+<LocalizedNames type="table">
+<en-us>Movie Night</en-us>
+<en-US>Movie Night</en-US>
+</LocalizedNames>
+</Theme>
+<EpisodeGroup>
+</EpisodeGroup>
+<DesignerKnob type="integer">0</DesignerKnob>
+<MobBucketSize type="integer">5</MobBucketSize>
+<SeasonSponsor type="table">
+<en-us>Microsoft</en-us>
+</SeasonSponsor>
+<EpisodeSponsor type="table">
+<en-us>Microsoft</en-us>
+</EpisodeSponsor>
+</xsor:object>
+launch data, a special with artwork:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
+<EpisodeId>episode</EpisodeId>
+<LiveStreamPathURI type="table">
+<en-us>http://192.0.2.10/livehost.mp3</en-us>
+</LiveStreamPathURI>
+<StartTime>2026-10-23T20:00:00.000Z</StartTime>
+<EndTime>2026-10-23T20:30:00.000Z</EndTime>
+<Duration type="integer">30</Duration>
+<GameType type="integer">2</GameType>
+<Theme type="table">
+<Name>Community</Name>
+<LocalizedNames type="table">
+<en-us>Movie Night</en-us>
+<en-US>Movie Night</en-US>
+</LocalizedNames>
+</Theme>
+<EpisodeGroup>
+</EpisodeGroup>
+<DesignerKnob type="integer">0</DesignerKnob>
+<MobBucketSize type="integer">5</MobBucketSize>
+<SeasonSponsor type="table">
+<en-us>Microsoft</en-us>
+</SeasonSponsor>
+<EpisodeSponsor type="table">
+<en-us>Microsoft</en-us>
+</EpisodeSponsor>
+</xsor:object>
+launch data without a schedule:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
+<EpisodeId>00000000-0000-0000-0000-000000000000</EpisodeId>
+<LiveStreamPathURI type="table">
+<en-us>http://192.0.2.10/livehost.mp3</en-us>
+</LiveStreamPathURI>
+<StartTime>2026-09-27T12:02:00.000Z</StartTime>
+<EndTime>2026-09-27T14:00:00.000Z</EndTime>
+<Duration type="integer">600</Duration>
+<GameType type="integer">1</GameType>
+<Theme type="table">
+<Name>
+</Name>
+<LocalizedNames type="table">
+</LocalizedNames>
+</Theme>
+<EpisodeGroup>
+</EpisodeGroup>
+<DesignerKnob type="integer">0</DesignerKnob>
+<MobBucketSize type="integer">5</MobBucketSize>
+<SeasonSponsor type="table">
+<en-us>Microsoft</en-us>
+</SeasonSponsor>
+<EpisodeSponsor type="table">
+<en-us>Microsoft</en-us>
+</EpisodeSponsor>
+</xsor:object>
+available languages:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="AvailableLanguages" type="table">
+<Languages type="table">
+<XsorItem>en-US</XsorItem>
+</Languages>
+</xsor:object>
+a sum:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="Sum" type="table">
+<Value>102</Value>
+</xsor:object>
+a board:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="TopN" type="table">
+<Values type="table">
+<XsorItem type="table">
+<Value>0.72</Value>
+<Metadata>
+<Metadata>16140909857506937655</Metadata>
+</Metadata>
+</XsorItem>
+</Values>
+</xsor:object>
+a player's documents:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="UserStorage" type="table">
+<LQ type="integer">0</LQ>
+<LC type="integer">0</LC>
+<LS type="integer">0</LS>
+<LRS type="integer">0</LRS>
+<LME type="integer">0</LME>
+<LCS type="integer">0</LCS>
+<LLS type="integer">0</LLS>
+<LGP type="integer">0</LGP>
+<CW type="integer">0</CW>
+<CWQ type="integer">0</CWQ>
+<CWC type="integer">0</CWC>
+<CWA type="table">
+</CWA>
+<RH type="table">
+</RH>
+<Sweepstakes type="table">
+</Sweepstakes>
+<PS type="table">
+<bValid type="boolean">false</bValid>
+<optionNum type="integer">2</optionNum>
+<Prizes type="boolean">false</Prizes>
+<Callout type="boolean">false</Callout>
+<TheOne type="boolean">false</TheOne>
+<Mob type="boolean">false</Mob>
+<ExMob type="boolean">false</ExMob>
+<Crowd type="boolean">true</Crowd>
+</PS>
+</xsor:object>
+a question:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="question" type="table">
+<Question>Which company makes and sells the iPod?</Question>
+<CorrectAnswer type="integer">3</CorrectAnswer>
+<ChoiceList type="table">
+<XsorItem>Dell</XsorItem>
+<XsorItem>Nokia</XsorItem>
+<XsorItem>Apple</XsorItem>
+</ChoiceList>
+</xsor:object>
+the reset ids:
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="ResetID" type="table">
+<XsorItem type="integer">251402</XsorItem>
+<XsorItem type="integer">251317</XsorItem>
+<XsorItem type="integer">251401</XsorItem>
+</xsor:object>
+the available ids:
+<XsorObject>
+<XsorItem type="float">251402</XsorItem>
+<XsorItem type="float">251317</XsorItem>
+<XsorItem type="float">251401</XsorItem>
+</XsorObject>
+the used ids:
+<XsorObject />
+a list the title stored:
+<XsorObject>
+<XsorItem type="float">251317</XsorItem>
+<XsorItem type="float">251401</XsorItem>
+</XsorObject>

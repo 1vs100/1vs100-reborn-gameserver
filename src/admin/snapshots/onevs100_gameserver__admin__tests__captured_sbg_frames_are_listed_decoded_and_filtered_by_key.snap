@@ -1,0 +1,28 @@
+---
+source: src/admin/mod.rs
+expression: "listed(\"/admin/sbg/events?key=pangolin&limit=4\")"
+---
+[
+  {
+    "at_unix_ms": 0,
+    "conn": 1,
+    "cookie": 102,
+    "key": "v3.Setup.MGS.1vs100.Store.Pangolin.Config",
+    "kind": "in",
+    "peer": "10.0.0.129",
+    "seq": 5,
+    "text": "in cookie=0x0066 get v3.Setup.MGS.1vs100.Store.Pangolin.Config",
+    "xuid_hex": null
+  },
+  {
+    "at_unix_ms": 0,
+    "conn": 1,
+    "cookie": 102,
+    "key": "v3.Setup.MGS.1vs100.Store.Pangolin.Config",
+    "kind": "out",
+    "peer": "10.0.0.129",
+    "seq": 6,
+    "text": "out cookie=0x0066 kind=0x82 status=200 hex:0000000000000000",
+    "xuid_hex": null
+  }
+]

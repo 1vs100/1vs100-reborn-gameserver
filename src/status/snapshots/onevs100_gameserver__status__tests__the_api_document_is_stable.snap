@@ -1,0 +1,411 @@
+---
+source: src/status/mod.rs
+expression: document
+---
+{
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "type": "object"
+      },
+      "GameType": {
+        "enum": [
+          "primetime",
+          "extended_play"
+        ],
+        "type": "string"
+      },
+      "LeaderboardPage": {
+        "properties": {
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/StandingInfo"
+            },
+            "type": "array"
+          },
+          "offset": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "total": {
+            "description": "Players on the board.",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "offset",
+          "entries"
+        ],
+        "type": "object"
+      },
+      "LiveInfo": {
+        "properties": {
+          "consoles": {
+            "description": "Consoles in a matchmaking session.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "current": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ShowSummary",
+                "description": "The show on now; `null` between shows."
+              }
+            ]
+          },
+          "next": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ShowSummary",
+                "description": "The show after the current one."
+              }
+            ]
+          },
+          "players": {
+            "description": "Signed-in players on those consoles.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "progress": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Progress",
+                "description": "How far the current show is; `null` when no game is running."
+              }
+            ]
+          },
+          "standings": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Standings",
+                "description": "The current show's latest score board; `null` before its first posted score."
+              }
+            ]
+          }
+        },
+        "required": [
+          "consoles",
+          "players"
+        ],
+        "type": "object"
+      },
+      "Progress": {
+        "properties": {
+          "question": {
+            "format": "int32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "round": {
+            "description": "`null` in Extended Play, which has no rounds.",
+            "format": "int32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "ServerInfo": {
+        "properties": {
+          "built_utc": {
+            "description": "When this binary was built, UTC.",
+            "type": "string"
+          },
+          "commit": {
+            "description": "The git commit it was built from, when known.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title_build": {
+            "description": "The title build this server speaks: `1149` (v2.0.1149.0) or `1317` (v2.0.1317.0).",
+            "type": "string"
+          },
+          "uptime_secs": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "uptime_secs",
+          "built_utc",
+          "title_build"
+        ],
+        "type": "object"
+      },
+      "ShowSummary": {
+        "properties": {
+          "end_utc": {
+            "type": "string"
+          },
+          "game_type": {
+            "$ref": "#/components/schemas/GameType"
+          },
+          "language": {
+            "description": "The questions' language, BCP 47.",
+            "type": "string"
+          },
+          "show_type": {
+            "$ref": "#/components/schemas/ShowType"
+          },
+          "start_utc": {
+            "type": "string"
+          },
+          "title": {
+            "description": "A special episode's title.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "topic": {
+            "description": "A special episode's question category.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "show_type",
+          "game_type",
+          "language",
+          "start_utc",
+          "end_utc"
+        ],
+        "type": "object"
+      },
+      "ShowType": {
+        "enum": [
+          "primetime",
+          "extended_play",
+          "special"
+        ],
+        "type": "string"
+      },
+      "StandingInfo": {
+        "properties": {
+          "gamertag": {
+            "type": "string"
+          },
+          "points": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "rank": {
+            "description": "Equal points share a rank.",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rank",
+          "gamertag",
+          "points"
+        ],
+        "type": "object"
+      },
+      "Standings": {
+        "properties": {
+          "entries": {
+            "description": "At most ten.",
+            "items": {
+              "$ref": "#/components/schemas/StandingInfo"
+            },
+            "type": "array"
+          },
+          "question": {
+            "description": "The question after which the scores were posted.",
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "round": {
+            "format": "int32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "scope": {
+            "$ref": "#/components/schemas/StandingsScope"
+          }
+        },
+        "required": [
+          "scope",
+          "question",
+          "entries"
+        ],
+        "type": "object"
+      },
+      "StandingsScope": {
+        "enum": [
+          "round",
+          "show"
+        ],
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "description": "Public, read-only state of one onevs100-gameserver: the server, the show on now, the shows to come, and the all-time leaderboard.",
+    "title": "1 vs 100 revival - status API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/status/v1/leaderboard": {
+      "get": {
+        "operationId": "leaderboard_page",
+        "parameters": [
+          {
+            "description": "First entry to return (default 0).",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Entries to return (default 50, at most 100).",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderboardPage"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid offset or limit"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Player data cannot be read"
+          }
+        },
+        "summary": "All-time leaderboard by lifetime score; lists only players whose in-game privacy setting is\npublic",
+        "tags": []
+      }
+    },
+    "/status/v1/live": {
+      "get": {
+        "operationId": "live_status",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveInfo"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Players online, the show on now and the next one, and the current scores",
+        "tags": []
+      }
+    },
+    "/status/v1/schedule": {
+      "get": {
+        "operationId": "schedule_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ShowSummary"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "The running show and those after it, at most 20; empty without a programme",
+        "tags": []
+      }
+    },
+    "/status/v1/server": {
+      "get": {
+        "operationId": "server",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerInfo"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "The server and its build",
+        "tags": []
+      }
+    }
+  }
+}

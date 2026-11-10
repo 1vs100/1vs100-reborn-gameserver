@@ -1,0 +1,24 @@
+[Unit]
+Description=1 vs 100 revival nginx: public site, console HTTP and admin UI behind the host's nginx
+After=network-online.target onevs100-gameserver.service
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/onevs100/gameserver.env
+Environment=ONEVS100_ROOT=/opt/onevs100
+Environment=NGINX_RUN_DIR=/run/onevs100-nginx
+RuntimeDirectory=onevs100-nginx
+ExecStart=/opt/onevs100/deployment/nginx/serve.sh run
+ExecReload=/opt/onevs100/deployment/nginx/serve.sh reload
+Restart=on-failure
+RestartSec=5
+# It listens on unprivileged ports only.
+DynamicUser=yes
+CapabilityBoundingSet=
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

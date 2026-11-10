@@ -1,0 +1,27 @@
+{
+  "name": "revival-admin-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "api:dump": "cargo run --offline --manifest-path ../Cargo.toml --bin openapi_dump > openapi.json",
+    "api:generate": "pnpm api:dump && orval",
+    "dev": "pnpm api:generate && vite --host 0.0.0.0",
+    "build": "pnpm api:dump && pnpm build:client",
+    "build:client": "orval && tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4",
+    "orval": "^7",
+    "typescript": "^5",
+    "vite": "^7"
+  }
+}

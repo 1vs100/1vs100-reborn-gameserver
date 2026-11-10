@@ -1,0 +1,9 @@
+# Settings are read in one place: `src/config.rs` parses and validates them at startup.
+# Mutexes are locked in one place: `src/sync.rs`.
+disallowed-methods = [
+    { path = "std::env::var", reason = "read settings through `config::Config`" },
+    { path = "std::env::var_os", reason = "read settings through `config::Config`" },
+    { path = "std::env::vars", reason = "read settings through `config::Config`" },
+    { path = "std::env::vars_os", reason = "read settings through `config::Config`" },
+    { path = "std::sync::Mutex::lock", reason = "lock through `sync::lock`, which recovers from a poisoned lock" },
+]

@@ -1,0 +1,15 @@
+---
+source: src/sbg/key.rs
+expression: shown(&keys)
+---
+v3.Season.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.EXTENDEDPLAY.Question.12.RoundScores = ParsedKey { raw: "v3.Season.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.EXTENDEDPLAY.Question.12.RoundScores", namespace: Some(Season), collection: Some(TopN), kind: ExtendedPlayRoundScores { session: SessionId("00000000-0000-0000-0000-000000000001"), question: Some(QuestionNumber(12)) } }
+v3.Setup.MGS.1vs100.Store.QuestionBank.Difficulty.1.ID.251317 = ParsedKey { raw: "v3.Setup.MGS.1vs100.Store.QuestionBank.Difficulty.1.ID.251317", namespace: Some(Setup), collection: Some(Store), kind: QuestionBank { locale: None, difficulty: 1, entry: Id(QuestionId(251317)) } }
+v3.Session.MGS.1vs200.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.693.MobSelection = ParsedKey { raw: "v3.Session.MGS.1vs200.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.693.MobSelection", namespace: None, collection: None, kind: Other }
+v1.Session.MGS.1vs100.00000000-0000-0000-0000-000000000001.GameState = ParsedKey { raw: "v1.Session.MGS.1vs100.00000000-0000-0000-0000-000000000001.GameState", namespace: None, collection: None, kind: Other }
+v3.Session.MGS.1vs100.Store..GameState = ParsedKey { raw: "v3.Session.MGS.1vs100.Store..GameState", namespace: Some(Session), collection: Some(Store), kind: Other }
+v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.x.Question.1.Crowd.Choice1 = ParsedKey { raw: "v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.x.Question.1.Crowd.Choice1", namespace: Some(Session), collection: Some(Sum), kind: Other }
+v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.Crowd.Choice4 = ParsedKey { raw: "v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.Crowd.Choice4", namespace: Some(Session), collection: Some(Sum), kind: Other }
+v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.StatBreaks.Streak.Bucket5 = ParsedKey { raw: "v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.StatBreaks.Streak.Bucket5", namespace: Some(Session), collection: Some(Sum), kind: Other }
+v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.Unknown = ParsedKey { raw: "v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.Unknown", namespace: Some(Session), collection: Some(TopN), kind: Other }
+v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.GameState = ParsedKey { raw: "v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.PRIMETIME.Round.1.Question.1.GameState", namespace: Some(Session), collection: Some(Store), kind: Other }
+ = ParsedKey { raw: "", namespace: None, collection: None, kind: Other }

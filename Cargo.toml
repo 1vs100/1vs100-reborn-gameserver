@@ -1,0 +1,38 @@
+# The server and the question import tool. The server binary does not link the tool's HTTP
+# client.
+[workspace]
+members = [".", "question-import"]
+default-members = [".", "question-import"]
+
+[package]
+name = "onevs100-gameserver"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+base64 = "0.22"
+flate2 = "1"
+# Random show ids (already in the tree through `rsa`).
+getrandom = "0.2"
+# Time zones only, through `time.rs`: the IANA database compiled in (`jiff-tzdb`), no system files.
+jiff = { version = "0.2", default-features = false, features = ["std", "tzdb-bundle-always"] }
+quick-xml = { version = "0.38", features = ["serialize"] }
+rsa = { version = "0.9", features = ["sha1"] }
+serde = { version = "1", features = ["derive"] }
+sha1 = { version = "0.10", features = ["oid"] }
+time = { version = "0.3", features = ["formatting", "macros", "parsing"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+serde_json = "1"
+utoipa = { version = "5", features = ["preserve_order"] }
+zerocopy = { version = "0.8", features = ["derive"] }
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+# The PostgreSQL backend, used when GAMESERVER_DATABASE_URL is set.
+postgres = "0.19"
+# The Massive ad server, used when GAMESERVER_ADS_CONFIG is set; it runs on Tokio.
+massive-proto = { git = "https://github.com/1vs100/mads_server_v5", branch = "main" }
+massived = { git = "https://github.com/1vs100/mads_server_v5", branch = "main" }
+tokio = { version = "1", features = ["rt"] }
+
+[dev-dependencies]
+insta = { version = "1.49.0", features = ["json"] }

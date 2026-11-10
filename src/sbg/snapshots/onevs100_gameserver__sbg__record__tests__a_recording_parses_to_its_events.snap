@@ -1,0 +1,107 @@
+---
+source: src/sbg/record.rs
+expression: parse(&text).unwrap()
+---
+Recording {
+    settings: Settings {
+        protocol: V1149,
+        options: SimulationOptions {
+            synthetic_mob: true,
+            synthetic_crowd: 60,
+        },
+        server_flow: true,
+        schedule: false,
+        served: ServedConfig {
+            joining_percentage: 0,
+            hosting_percentage: 100,
+            matchmake_end_game_shutdown: Some(
+                0,
+            ),
+        },
+    },
+    started: Utc {
+        unix_ms: 1792715141159,
+    },
+    service_host: Some(
+        "192.0.2.10",
+    ),
+    storage: None,
+    events: [
+        Event {
+            at_ms: 0,
+            conn: ConnId(
+                1,
+            ),
+            peer: Some(
+                192.0.2.21,
+            ),
+            xuid: None,
+            kind: Open,
+            frame: [],
+        },
+        Event {
+            at_ms: 12,
+            conn: ConnId(
+                1,
+            ),
+            peer: Some(
+                192.0.2.21,
+            ),
+            xuid: Some(
+                Xuid(
+                    16140909857506937655,
+                ),
+            ),
+            kind: In,
+            frame: [
+                255,
+                0,
+                1,
+            ],
+        },
+        Event {
+            at_ms: 40,
+            conn: ConnId(
+                1,
+            ),
+            peer: None,
+            xuid: None,
+            kind: Out,
+            frame: [
+                3,
+                130,
+            ],
+        },
+        Event {
+            at_ms: 41,
+            conn: ConnId(
+                1,
+            ),
+            peer: Some(
+                192.0.2.21,
+            ),
+            xuid: None,
+            kind: Close,
+            frame: [],
+        },
+        Event {
+            at_ms: 42,
+            conn: ConnId(
+                2,
+            ),
+            peer: Some(
+                2001:db8::21,
+            ),
+            xuid: Some(
+                Xuid(
+                    16140909857506937655,
+                ),
+            ),
+            kind: In,
+            frame: [
+                3,
+            ],
+        },
+    ],
+    dropped: 0,
+}

@@ -1,0 +1,14 @@
+---
+source: question-import/src/fit.rs
+expression: "shown.join(\"\\n\")"
+---
+a question of the source's easy tier: Ok(Question { id: QuestionId(1699249), locale: "en-US", difficulty: VeryEasy, text: "Which planet is red?", choices: ["Wrong 1", "Right", "Wrong 3"], correct: B, categories: ["science-nature"], source: "otdb", origin: Origin { category: None, id: None } })
+a question of the source's hard tier: Ok(Question { id: QuestionId(10379630), locale: "en-US", difficulty: Hard, text: "Which planet is blue?", choices: ["Right", "Wrong 2", "Wrong 3"], correct: A, categories: ["general-knowledge"], source: "otdb", origin: Origin { category: None, id: None } })
+a question the source grades itself: Ok(Question { id: QuestionId(2065288), locale: "en-US", difficulty: Hard, text: "Q?", choices: ["Wrong 2", "Right", "Wrong 3"], correct: B, categories: ["general-knowledge"], source: "otdb", origin: Origin { category: None, id: None } })
+a question graded outside the title's five: Err(NoTitleDifficulty)
+a question with one wrong answer: Err(FewerThanTwoWrongAnswers)
+a question too long: Err(QuestionTooLong)
+an answer too long: Err(AnswerTooLong)
+characters outside ASCII: Err(NotAscii)
+no text: Err(Empty)
+characters outside ASCII, allowed: Ok(Question { id: QuestionId(5105491), locale: "en-US", difficulty: Easy, text: "Who painted the Café Terrace?", choices: ["Wrong 1", "Right", "Wrong 3"], correct: B, categories: ["s-1"], source: "otdb", origin: Origin { category: None, id: None } })

@@ -1,0 +1,16 @@
+target
+logs
+data
+.env
+.git
+frontend/node_modules
+frontend/dist
+frontend/src/api
+frontend/openapi.json
+frontend/*.tsbuildinfo
+site/node_modules
+site/dist
+site/src/api
+site/openapi.json
+deployment/nginx/run
+site/*.tsbuildinfo

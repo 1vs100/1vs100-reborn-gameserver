@@ -1,0 +1,2681 @@
+---
+source: src/admin/mod.rs
+expression: document
+---
+{
+  "components": {
+    "schemas": {
+      "CategoryInfo": {
+        "properties": {
+          "counts": {
+            "description": "Questions at difficulty 1 to 5.",
+            "items": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "extended_play": {
+            "description": "The same for one Extended Play episode, for an Extended Play special.",
+            "type": "boolean"
+          },
+          "id": {
+            "description": "Ours (`music`); every source's questions of it count.",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "primetime": {
+            "description": "Whether it has as many at each difficulty as one Primetime round asks (2, 3, 5, 4, 7):\nonly then can a Primetime special be of this category.",
+            "type": "boolean"
+          },
+          "sources": {
+            "description": "The sources its questions come from, in bank order.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "sources",
+          "counts",
+          "primetime",
+          "extended_play"
+        ],
+        "type": "object"
+      },
+      "ClearResponse": {
+        "properties": {
+          "removed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "removed"
+        ],
+        "type": "object"
+      },
+      "DeleteResponse": {
+        "description": "Result of deleting a player.",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "deleted"
+        ],
+        "type": "object"
+      },
+      "ErrorReportFields": {
+        "description": "What the title wrote in a report of the known format.",
+        "properties": {
+          "about_key": {
+            "description": "The SBG key the error is about (`NO_MSG` when none).",
+            "type": "string"
+          },
+          "clock_offset_ms": {
+            "description": "The console's clock less the server's when the report arrived; the time the report took\nto arrive makes a console look that much behind.",
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "console_utc_unix_ms": {
+            "description": "The console's clock when it wrote the report; absent when the report has no `UTC` time.",
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "fatal": {
+            "description": "`No` or `None` for a report, `Fatal`, `Exit` or `Crash` when the title gives up.",
+            "type": "string"
+          },
+          "is_fatal": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "round": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "substate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "reason",
+          "fatal",
+          "is_fatal",
+          "state",
+          "substate",
+          "round",
+          "question",
+          "about_key"
+        ],
+        "type": "object"
+      },
+      "ErrorReportInfo": {
+        "description": "One saved error report.",
+        "properties": {
+          "console": {
+            "description": "The address of the console that posted it.",
+            "type": "string"
+          },
+          "document": {
+            "description": "The posted document. Bytes that are not UTF-8 show as replacement characters.",
+            "type": "string"
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ErrorReportFields",
+                "description": "The report's fields; absent for a report in an unknown format."
+              }
+            ]
+          },
+          "id": {
+            "description": "Later reports have larger ids.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "key": {
+            "type": "string"
+          },
+          "received_unix_ms": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "received_unix_ms",
+          "console",
+          "key",
+          "document"
+        ],
+        "type": "object"
+      },
+      "ErrorReportsClearResponse": {
+        "properties": {
+          "removed": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "removed"
+        ],
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "description": "The body of every error reply.",
+        "properties": {
+          "error": {
+            "description": "What went wrong, for a person to read.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "type": "object"
+      },
+      "GameStateInfo": {
+        "properties": {
+          "end_utc": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "key": {
+            "type": "string"
+          },
+          "known": {
+            "description": "Whether `name` is one of the title's states.",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "The state's `name`; `null` if the document cannot be read.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "question": {
+            "format": "int32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "round": {
+            "format": "int32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "session": {
+            "description": "The session (show) id the key names.",
+            "type": "string"
+          },
+          "start_utc": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "xml": {
+            "description": "The document as stored.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "session",
+          "known",
+          "xml"
+        ],
+        "type": "object"
+      },
+      "GameStatesInfo": {
+        "description": "What the consoles' GameState documents say, as the Overview shows it.",
+        "properties": {
+          "phases": {
+            "description": "The states in the order a round passes through them (`GameStateName::ROUND_ORDER`).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "states": {
+            "description": "Every stored GameState, by key.",
+            "items": {
+              "$ref": "#/components/schemas/GameStateInfo"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "phases",
+          "states"
+        ],
+        "type": "object"
+      },
+      "GridShowInfo": {
+        "properties": {
+          "end_utc": {
+            "type": "string"
+          },
+          "mode": {
+            "description": "`pt` (Primetime) or `ep` (Extended Play).",
+            "type": "string"
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "start_utc": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "start_utc",
+          "end_utc",
+          "mode"
+        ],
+        "type": "object"
+      },
+      "GridWindowInfo": {
+        "description": "What a Grid fetch lists right now.",
+        "properties": {
+          "current": {
+            "$ref": "#/components/schemas/GridShowInfo"
+          },
+          "next": {
+            "$ref": "#/components/schemas/GridShowInfo"
+          }
+        },
+        "required": [
+          "current",
+          "next"
+        ],
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "sbg_last_activity_secs_ago": {
+            "description": "Seconds since any SBG connection last received a byte; `null` if none ever connected.",
+            "format": "int64",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "uptime_secs": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "uptime_secs"
+        ],
+        "type": "object"
+      },
+      "ImportResponse": {
+        "description": "Result of a data import.",
+        "properties": {
+          "blobs": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "counters": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "players": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "programme": {
+            "description": "Whether the dump carried a programme, which replaced the saved one.",
+            "type": "boolean"
+          },
+          "questions": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "shows": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "specials": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "players",
+          "blobs",
+          "counters",
+          "programme",
+          "specials",
+          "shows",
+          "questions"
+        ],
+        "type": "object"
+      },
+      "KeyInfo": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "len": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "len"
+        ],
+        "type": "object"
+      },
+      "LogFileInfo": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "size_bytes"
+        ],
+        "type": "object"
+      },
+      "PlannedShowInfo": {
+        "description": "One show as the programme plans it.",
+        "properties": {
+          "artwork": {
+            "description": "A special's theme artwork.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "description": "A special's question category.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "end_utc": {
+            "type": "string"
+          },
+          "kind": {
+            "description": "`primetime`, `special` or `extended_play`.",
+            "type": "string"
+          },
+          "minutes": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "mode": {
+            "description": "`pt` (Primetime) or `ep` (Extended Play).",
+            "type": "string"
+          },
+          "start_local": {
+            "description": "The start on the programme zone's wall clock, `YYYY-MM-DD HH:MM`.",
+            "type": "string"
+          },
+          "start_utc": {
+            "type": "string"
+          },
+          "title": {
+            "description": "A special's title.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "start_utc",
+          "end_utc",
+          "start_local",
+          "minutes",
+          "mode",
+          "kind"
+        ],
+        "type": "object"
+      },
+      "PlayerInfo": {
+        "description": "A registered player and the size of what is stored for them.",
+        "properties": {
+          "avatar_bytes": {
+            "description": "Absent until the title uploads an avatar.",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "first_seen_unix_secs": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "gamertag": {
+            "description": "Absent until the title reports a name.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_seen_unix_secs": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "user_stats_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "user_storage_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "xuid_hex": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "xuid_hex",
+          "first_seen_unix_secs",
+          "last_seen_unix_secs",
+          "user_storage_bytes",
+          "user_stats_bytes"
+        ],
+        "type": "object"
+      },
+      "ProgrammeInfo": {
+        "description": "The daily programme: Primetime at local times, Extended Play between them.",
+        "properties": {
+          "extended_play_minutes": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "min_extended_play_minutes": {
+            "description": "The shortest Extended Play show: what whole ones leave before a Primetime show is one\nmore show, and must be at least this long.",
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "primetime_at": {
+            "description": "Local starts of the daily Primetime shows, `HH:MM`, in order.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "primetime_minutes": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "zone": {
+            "description": "IANA time zone, e.g. `America/New_York`.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "zone",
+          "primetime_at",
+          "primetime_minutes",
+          "extended_play_minutes",
+          "min_extended_play_minutes"
+        ],
+        "type": "object"
+      },
+      "QuestionInfo": {
+        "properties": {
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "choices": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "correct": {
+            "description": "The right choice, 1 to 3.",
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "difficulty": {
+            "description": "1 (very easy) to 5 (very hard).",
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "licence": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "locale": {
+            "type": "string"
+          },
+          "origin_category": {
+            "description": "The source's own category and id, where the source has them.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "origin_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source": {
+            "description": "The source's id; its name, licence and URL are null while the bank does not list it.",
+            "type": "string"
+          },
+          "source_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "locale",
+          "difficulty",
+          "text",
+          "choices",
+          "correct",
+          "categories",
+          "source"
+        ],
+        "type": "object"
+      },
+      "QuestionsImportResponse": {
+        "properties": {
+          "imported": {
+            "description": "Questions in the imported file.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "questions": {
+            "description": "Questions saved and served.",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "imported",
+          "questions"
+        ],
+        "type": "object"
+      },
+      "ResetInfo": {
+        "description": "What `POST /admin/reset` dropped and what it left alone.",
+        "properties": {
+          "cleared": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "kept": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "cleared",
+          "kept"
+        ],
+        "type": "object"
+      },
+      "SbgCaptureInfo": {
+        "description": "What the capture holds.",
+        "properties": {
+          "dropped": {
+            "description": "Events dropped since the server started, because the capture fell behind.",
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "failure": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/SbgRecordingFailure",
+                "description": "The last recording that stopped on a write error."
+              }
+            ]
+          },
+          "oldest_unix_ms": {
+            "description": "When the oldest kept event happened; absent when none is kept.",
+            "format": "int64",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "recent_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "recent_capacity_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "recent_events": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "recording": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/SbgRecordingInfo"
+              }
+            ]
+          }
+        },
+        "required": [
+          "recent_events",
+          "recent_bytes",
+          "recent_capacity_bytes",
+          "dropped"
+        ],
+        "type": "object"
+      },
+      "SbgEventInfo": {
+        "description": "One captured SBG event, decoded.",
+        "properties": {
+          "at_unix_ms": {
+            "description": "On the clock of the server's log lines.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "conn": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "cookie": {
+            "description": "Pairs a request with its reply on one connection.",
+            "format": "int32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "key": {
+            "description": "The key a request names; on a reply, the key of its request.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "kind": {
+            "$ref": "#/components/schemas/SbgEventKind"
+          },
+          "peer": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "seq": {
+            "description": "Later events have larger numbers.",
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "text": {
+            "description": "The event decoded: action, key and value of a request, status and value of a reply.",
+            "type": "string"
+          },
+          "xuid_hex": {
+            "description": "The console's first player when the event was captured, as 16 hex digits.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "seq",
+          "at_unix_ms",
+          "conn",
+          "kind",
+          "text"
+        ],
+        "type": "object"
+      },
+      "SbgEventKind": {
+        "enum": [
+          "open",
+          "close",
+          "in",
+          "out"
+        ],
+        "type": "string"
+      },
+      "SbgRecordingFailure": {
+        "description": "A recording the server stopped because a write failed.",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "error"
+        ],
+        "type": "object"
+      },
+      "SbgRecordingFileInfo": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "size_bytes"
+        ],
+        "type": "object"
+      },
+      "SbgRecordingInfo": {
+        "description": "A recording file being written.",
+        "properties": {
+          "events": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "name": {
+            "description": "The file name below `/admin/sbg/recordings/`; absent for a file outside the session log\ndirectory (`GAMESERVER_RECORD_SBG`).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "path": {
+            "type": "string"
+          },
+          "started_unix_ms": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "path",
+          "started_unix_ms",
+          "events"
+        ],
+        "type": "object"
+      },
+      "SessionInfo": {
+        "properties": {
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/SessionMemberInfo"
+            },
+            "type": "array"
+          },
+          "reservations": {
+            "items": {
+              "$ref": "#/components/schemas/SessionReservationInfo"
+            },
+            "type": "array"
+          },
+          "session_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id",
+          "members",
+          "reservations"
+        ],
+        "type": "object"
+      },
+      "SessionMemberInfo": {
+        "description": "A connected console.",
+        "properties": {
+          "first_seen_unix_secs": {
+            "description": "Wall-clock join time (unix seconds).",
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "gamertag": {
+            "description": "The first player's gamertag.",
+            "type": "string"
+          },
+          "group_id": {
+            "description": "QNet group inside the session (roster, relay and avatars are scoped to it).",
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "last_heartbeat_secs_ago": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "players": {
+            "description": "Every signed-in local player, user 0 first.",
+            "items": {
+              "$ref": "#/components/schemas/SessionPlayerInfo"
+            },
+            "type": "array"
+          },
+          "xuid_hex": {
+            "description": "The first player's XUID: the console's identity.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "xuid_hex",
+          "gamertag",
+          "players",
+          "last_heartbeat_secs_ago",
+          "first_seen_unix_secs",
+          "group_id"
+        ],
+        "type": "object"
+      },
+      "SessionPlayerInfo": {
+        "properties": {
+          "avatar_bytes": {
+            "description": "Size of the last avatar metadata blob uploaded, absent until one is.",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "gamertag": {
+            "type": "string"
+          },
+          "xuid_hex": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "xuid_hex",
+          "gamertag"
+        ],
+        "type": "object"
+      },
+      "SessionReservationInfo": {
+        "description": "A console that left, holding its place in its group for the grace period.",
+        "properties": {
+          "expires_in_secs": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "group_id": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "players": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "xuid_hex": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "xuid_hex",
+          "group_id",
+          "players",
+          "expires_in_secs"
+        ],
+        "type": "object"
+      },
+      "ShowInfo": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PlannedShowInfo"
+          },
+          {
+            "properties": {
+              "episode_id": {
+                "type": "string"
+              },
+              "manual": {
+                "description": "Started by hand (`POST /admin/shows/now`).",
+                "type": "boolean"
+              },
+              "session_id": {
+                "type": "string"
+              },
+              "state": {
+                "description": "`running`, `listed` (the Grid lists it: a programme change keeps it), `planned` (a change\nplans it again) or `past`.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "session_id",
+              "episode_id",
+              "state",
+              "manual"
+            ],
+            "type": "object"
+          }
+        ],
+        "description": "A materialised show: what consoles are or will be served."
+      },
+      "SpecialInfo": {
+        "description": "A themed episode in the place of one Primetime show.",
+        "properties": {
+          "artwork": {
+            "description": "Theme artwork of the episode package, e.g. `Community`.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "at": {
+            "description": "`HH:MM`, the Primetime start it replaces.",
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "date": {
+            "description": "`YYYY-MM-DD` in the programme's zone.",
+            "type": "string"
+          },
+          "minutes": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "mode": {
+            "description": "`pt` (Primetime) or `ep` (Extended Play).",
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "at",
+          "title",
+          "category",
+          "minutes",
+          "mode"
+        ],
+        "type": "object"
+      },
+      "StoreValue": {
+        "properties": {
+          "hex": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "key": {
+            "type": "string"
+          },
+          "text": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "TimelineEvent": {
+        "description": "One entry in the state timeline.",
+        "properties": {
+          "category": {
+            "description": "Broad category for filtering / colour-coding in the UI.",
+            "type": "string"
+          },
+          "description": {
+            "description": "Human-readable description of what changed.",
+            "type": "string"
+          },
+          "program_id": {
+            "description": "The program / session id this event relates to, if any.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timestamp": {
+            "description": "ISO-8601 / RFC-3339 timestamp in UTC.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "category",
+          "description"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Introspection and recovery controls for the local onevs100-gameserver LAN backend: the live GameState/session store, matchmaking roster, log tails, and clearing a single wedged key without restarting the server.",
+    "license": {
+      "identifier": "UNLICENSED",
+      "name": "Unlicensed - internal tool"
+    },
+    "title": "1 vs 100 revival - admin API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/admin/categories": {
+      "get": {
+        "operationId": "categories_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Categories in bank order"
+          }
+        },
+        "summary": "Categories of the served bank, with question counts per difficulty",
+        "tags": []
+      }
+    },
+    "/admin/data/export": {
+      "get": {
+        "operationId": "data_export",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Backend-neutral JSON dump (version 1): players with their documents, global counters"
+          }
+        },
+        "summary": "Export all persistent data as JSON",
+        "tags": []
+      }
+    },
+    "/admin/data/import": {
+      "post": {
+        "operationId": "data_import",
+        "parameters": [
+          {
+            "description": "merge (the default: what has the same id is replaced, the rest kept) or replace.",
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "A dump produced by /admin/data/export",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResponse"
+                }
+              }
+            },
+            "description": "Counts of what was loaded"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid dump or mode; nothing was changed"
+          }
+        },
+        "summary": "Import a JSON dump",
+        "tags": []
+      }
+    },
+    "/admin/data/players": {
+      "get": {
+        "operationId": "data_players",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Registered players (survive restarts) and the size of their stored documents"
+          }
+        },
+        "summary": "Players in the persistent registry",
+        "tags": []
+      }
+    },
+    "/admin/data/players/{xuid}/delete": {
+      "post": {
+        "operationId": "data_delete_player",
+        "parameters": [
+          {
+            "description": "XUID as 16 hex digits",
+            "in": "path",
+            "name": "xuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            },
+            "description": "Whether a player was removed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not a hex XUID"
+          }
+        },
+        "summary": "Delete a player and their stored documents",
+        "tags": []
+      }
+    },
+    "/admin/errors": {
+      "get": {
+        "operationId": "error_reports",
+        "parameters": [
+          {
+            "description": "Maximum reports to return, newest first (default 200, capped at 5000).",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ErrorReportInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The newest `limit` saved error reports, newest first"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The limit is not a number"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Storage failure"
+          }
+        },
+        "summary": "The consoles' error reports, newest first",
+        "tags": []
+      }
+    },
+    "/admin/errors/clear": {
+      "post": {
+        "operationId": "error_reports_clear",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReportsClearResponse"
+                }
+              }
+            },
+            "description": "How many reports were removed"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Storage failure"
+          }
+        },
+        "summary": "Remove every saved error report",
+        "tags": []
+      }
+    },
+    "/admin/gamestates": {
+      "get": {
+        "operationId": "game_states",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameStatesInfo"
+                }
+              }
+            },
+            "description": "The round's state order and every stored GameState"
+          }
+        },
+        "summary": "Every stored GameState, read: its state, round, question and window",
+        "tags": []
+      }
+    },
+    "/admin/grid/window": {
+      "get": {
+        "operationId": "grid_window_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GridWindowInfo"
+                }
+              }
+            },
+            "description": "Current and next show as served"
+          }
+        },
+        "summary": "The current and next show the Grid lists now",
+        "tags": []
+      }
+    },
+    "/admin/groups/move": {
+      "post": {
+        "operationId": "groups_move",
+        "parameters": [
+          {
+            "description": "The console's first player's XUID as 16 hex digits.",
+            "in": "query",
+            "name": "xuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Target group id (>= 1).",
+            "in": "query",
+            "name": "group",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moved"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad xuid or group"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No such console"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The group has no room for the console's players"
+          }
+        },
+        "summary": "Put a console into another QNet group; both groups get an ANNOUNCE",
+        "tags": []
+      }
+    },
+    "/admin/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Server uptime"
+          }
+        },
+        "summary": "Server uptime",
+        "tags": []
+      }
+    },
+    "/admin/log/{name}": {
+      "get": {
+        "operationId": "log_tail",
+        "parameters": [
+          {
+            "description": "A file name from GET /admin/logs",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Number of trailing lines to return, after filtering (default 200, capped at 5000).",
+            "in": "query",
+            "name": "lines",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Keep only records at this level or more severe.",
+            "in": "query",
+            "name": "level",
+            "required": false,
+            "schema": {
+              "description": "A record's severity, most severe first: a filter keeps its level and every one before it.",
+              "enum": [
+                "error",
+                "warn",
+                "info",
+                "debug",
+                "trace"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Keep only records with a line containing this text, ignoring ASCII case.",
+            "in": "query",
+            "name": "contains",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trailing lines of the log file, plain text"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid log name"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No such log file"
+          }
+        },
+        "summary": "Trailing lines of a log file",
+        "tags": []
+      }
+    },
+    "/admin/logs": {
+      "get": {
+        "operationId": "logs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LogFileInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Log files in this session's log directory"
+          }
+        },
+        "summary": "Log files in this session's log directory",
+        "tags": []
+      }
+    },
+    "/admin/programme": {
+      "get": {
+        "operationId": "programme_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgrammeInfo"
+                }
+              }
+            },
+            "description": "The programme"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No programme"
+          }
+        },
+        "summary": "The daily programme in effect",
+        "tags": []
+      },
+      "post": {
+        "operationId": "programme_set",
+        "parameters": [
+          {
+            "description": "IANA time zone, e.g. America/New_York.",
+            "in": "query",
+            "name": "zone",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Local starts of Primetime, HH:MM separated by commas (19:00,22:00).",
+            "in": "query",
+            "name": "primetime_at",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "15-240.",
+            "in": "query",
+            "name": "primetime_minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "15-240.",
+            "in": "query",
+            "name": "extended_play_minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "15 up to the Extended Play length.",
+            "in": "query",
+            "name": "min_extended_play_minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgrammeInfo"
+                }
+              }
+            },
+            "description": "The programme after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unknown zone, bad time or length"
+          }
+        },
+        "summary": "Change the daily programme; parameters left out keep their value. The shows the Grid lists\nstay, the rest is planned again",
+        "tags": []
+      }
+    },
+    "/admin/programme/plan": {
+      "get": {
+        "operationId": "programme_plan",
+        "parameters": [
+          {
+            "description": "How far ahead, 1-14 days; default 2.",
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "IANA time zone, e.g. America/New_York.",
+            "in": "query",
+            "name": "zone",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Local starts of Primetime, HH:MM separated by commas (19:00,22:00).",
+            "in": "query",
+            "name": "primetime_at",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "15-240.",
+            "in": "query",
+            "name": "primetime_minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "15-240.",
+            "in": "query",
+            "name": "extended_play_minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "15 up to the Extended Play length.",
+            "in": "query",
+            "name": "min_extended_play_minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PlannedShowInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Planned shows, the running one first"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad days or preview parameters"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No programme, and no preview parameters"
+          }
+        },
+        "summary": "The shows the programme plans from now, beyond the materialised ones too. With programme\nparameters, the shows a programme changed that way would plan (a preview: nothing is saved)",
+        "tags": []
+      }
+    },
+    "/admin/questions": {
+      "get": {
+        "operationId": "questions_get",
+        "parameters": [
+          {
+            "description": "Only this category (`music`).",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Only this difficulty, 1-5.",
+            "in": "query",
+            "name": "difficulty",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "At most this many (default 100, capped at 1000).",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QuestionInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Questions in bank order"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid difficulty, category or limit"
+          }
+        },
+        "summary": "Questions of the served bank, with their source",
+        "tags": []
+      }
+    },
+    "/admin/questions/export": {
+      "get": {
+        "operationId": "questions_export",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The imported bank as a bank file; no questions while the built-in bank is served"
+          }
+        },
+        "summary": "Export the imported question bank",
+        "tags": []
+      }
+    },
+    "/admin/questions/import": {
+      "post": {
+        "operationId": "questions_import",
+        "parameters": [
+          {
+            "description": "merge (the default: what has the same id is replaced, the rest kept) or replace.",
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "A bank file: {version, sources, categories, questions}",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionsImportResponse"
+                }
+              }
+            },
+            "description": "How many questions were imported and how many are saved now; served at once"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid bank file or mode; nothing was changed"
+          }
+        },
+        "summary": "Import a question bank file",
+        "tags": []
+      }
+    },
+    "/admin/reset": {
+      "post": {
+        "operationId": "reset_volatile",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetInfo"
+                }
+              }
+            },
+            "description": "What was cleared and what was kept"
+          }
+        },
+        "summary": "Drop all volatile state (show, election, GameState host) as if the server had just started",
+        "tags": []
+      }
+    },
+    "/admin/sbg/capture": {
+      "get": {
+        "operationId": "sbg_capture",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SbgCaptureInfo"
+                }
+              }
+            },
+            "description": "The kept SBG events and the recording being written"
+          }
+        },
+        "summary": "What the SBG capture holds",
+        "tags": []
+      }
+    },
+    "/admin/sbg/events": {
+      "get": {
+        "operationId": "sbg_events",
+        "parameters": [
+          {
+            "description": "Keep events at or after this time.",
+            "in": "query",
+            "name": "since_unix_ms",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Keep events at or before this time.",
+            "in": "query",
+            "name": "until_unix_ms",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Keep the events of this SBG connection.",
+            "in": "query",
+            "name": "conn",
+            "required": false,
+            "schema": {
+              "format": "int64",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Keep the events of this console address.",
+            "in": "query",
+            "name": "peer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Keep the events of the console whose first player has this XUID, as 16 hex digits.",
+            "in": "query",
+            "name": "xuid",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Keep requests whose key contains this text, ignoring ASCII case, and their replies.",
+            "in": "query",
+            "name": "key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Maximum events to return, the newest that match, oldest first (default 500, capped at\n5000).",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SbgEventInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The newest `limit` matching events, oldest first"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "A parameter does not parse"
+          }
+        },
+        "summary": "The kept SBG events that match, decoded",
+        "tags": []
+      }
+    },
+    "/admin/sbg/recording/start": {
+      "post": {
+        "operationId": "sbg_recording_start",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SbgRecordingInfo"
+                }
+              }
+            },
+            "description": "The recording started, in the session log directory"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "A recording is open already"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The file or the storage snapshot failed"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The server has no session log directory"
+          }
+        },
+        "summary": "Start writing every SBG frame to a new file",
+        "tags": []
+      }
+    },
+    "/admin/sbg/recording/stop": {
+      "post": {
+        "operationId": "sbg_recording_stop",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SbgRecordingInfo"
+                }
+              }
+            },
+            "description": "The recording that was closed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No recording is open"
+          }
+        },
+        "summary": "Close the recording file",
+        "tags": []
+      }
+    },
+    "/admin/sbg/recordings": {
+      "get": {
+        "operationId": "sbg_recordings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SbgRecordingFileInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Recording files, oldest first"
+          }
+        },
+        "summary": "The recording files in the session log directory",
+        "tags": []
+      }
+    },
+    "/admin/sbg/recordings/{name}": {
+      "get": {
+        "operationId": "sbg_recording_file",
+        "parameters": [
+          {
+            "description": "A file name from GET /admin/sbg/recordings",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The recording, plain text"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not a recording file name"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No such recording"
+          }
+        },
+        "summary": "One recording file, for `sbg_replay`",
+        "tags": []
+      }
+    },
+    "/admin/sessions": {
+      "get": {
+        "operationId": "sessions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SessionInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Matchmaking sessions and their members"
+          }
+        },
+        "summary": "Matchmaking sessions and their members",
+        "tags": []
+      }
+    },
+    "/admin/shows": {
+      "get": {
+        "operationId": "shows_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ShowInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Shows by start, with their ids and state"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No programme"
+          }
+        },
+        "summary": "The materialised shows: what consoles are, or will be, served",
+        "tags": []
+      }
+    },
+    "/admin/shows/now": {
+      "post": {
+        "operationId": "shows_now",
+        "parameters": [
+          {
+            "description": "pt (default) or ep.",
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "1-240, default 30.",
+            "in": "query",
+            "name": "minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ShowInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The shows after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad mode or length, or no programme"
+          }
+        },
+        "summary": "LAN tests: the running show ends now and a show of `mode` runs from now; the programme\ncontinues after it",
+        "tags": []
+      }
+    },
+    "/admin/specials": {
+      "get": {
+        "operationId": "specials_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SpecialInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Special episodes by date and time"
+          }
+        },
+        "summary": "The special episodes",
+        "tags": []
+      }
+    },
+    "/admin/specials/{date}/{at}": {
+      "post": {
+        "operationId": "special_put",
+        "parameters": [
+          {
+            "description": "YYYY-MM-DD in the programme's zone",
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "HH:MM, one of the programme's Primetime starts",
+            "in": "path",
+            "name": "at",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The show's theme. Consoles show it on the lobby marquee and the Extended Play screens\nonly in Extended Play; Primetime keeps its fixed marquee text.",
+            "in": "query",
+            "name": "title",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Question category of the served bank, e.g. music; it must have as many questions at each\ndifficulty as one Primetime round asks (2, 3, 5, 4, 7).",
+            "in": "query",
+            "name": "category",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "pt (default) or ep.",
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "15-240 for pt, 15-30 for ep; default the programme's length of that mode, so required\nwhile no programme is set.",
+            "in": "query",
+            "name": "minutes",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Theme artwork of the episode package, e.g. Community, InTheNews or BingGeneral.",
+            "in": "query",
+            "name": "artwork",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SpecialInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Special episodes after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad date, time, title or length, no Primetime show at that time, a special that runs into the next one, a category with too few questions, or no length and no programme"
+          }
+        },
+        "summary": "Make the Primetime show at `at` on `date` a special episode (replaces one there); planned\nagain like a programme change",
+        "tags": []
+      }
+    },
+    "/admin/specials/{date}/{at}/delete": {
+      "post": {
+        "operationId": "special_delete",
+        "parameters": [
+          {
+            "description": "YYYY-MM-DD",
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "HH:MM",
+            "in": "path",
+            "name": "at",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SpecialInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Special episodes after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad date or time"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No special at that date and time"
+          }
+        },
+        "summary": "Give the Primetime show at `at` on `date` back its regular episode",
+        "tags": []
+      }
+    },
+    "/admin/store/keys": {
+      "get": {
+        "operationId": "list_keys",
+        "parameters": [
+          {
+            "description": "Only return keys starting with this prefix.",
+            "in": "query",
+            "name": "prefix",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/KeyInfo"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "All stored keys and their byte length"
+          }
+        },
+        "summary": "All stored keys and their byte length",
+        "tags": []
+      }
+    },
+    "/admin/store/{key}": {
+      "get": {
+        "operationId": "get_key",
+        "parameters": [
+          {
+            "description": "The full SBG key, e.g. v3.Session.MGS.1vs100.Store.<program>.GameState",
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreValue"
+                }
+              }
+            },
+            "description": "Value found - text if valid UTF-8, hex otherwise"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "No such key"
+          }
+        },
+        "summary": "One stored value",
+        "tags": []
+      }
+    },
+    "/admin/store/{key}/clear": {
+      "post": {
+        "operationId": "clear_key",
+        "parameters": [
+          {
+            "description": "The full SBG key to remove",
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClearResponse"
+                }
+              }
+            },
+            "description": "Whether the key existed and was removed"
+          }
+        },
+        "summary": "Remove one stored key",
+        "tags": []
+      }
+    },
+    "/admin/timeline": {
+      "get": {
+        "operationId": "timeline",
+        "parameters": [
+          {
+            "description": "Maximum events to return (default 100, capped at 1000).",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TimelineEvent"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Recent state-change events, newest first"
+          }
+        },
+        "summary": "Recent state-change events, newest first",
+        "tags": []
+      }
+    }
+  }
+}

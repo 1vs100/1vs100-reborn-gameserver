@@ -1,0 +1,11 @@
+---
+source: src/wire/v1317.rs
+expression: "shown_bodies.join(\"\\n\")"
+---
+the bare layout: compressed false, execute time 0: key k, tag t, value -
+a captured prefix: compressed false, execute time 134351051868250000: key v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.591.TheOne, tag capacity=1&value=0.720000, value <Metadata>16140909857506937655</Metadata>
+a captured prefix cut short: InvalidNamedBody
+store_get_game_state: compressed false, execute time 134348575690410000: key v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.GameState, tag -, value -
+store_set_the_mob_compressed: compressed true, execute time 134348603720900000: key v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.PRIMETIME.183.TheMob, tag -, value 387 bytes
+user_get_user_storage: compressed false, execute time 0: key v3.Season.MGS.1vs100.UserStore.UserStorage, tag xuid=16140909857506937655, value -
+top_n_post_the_one: compressed false, execute time 134348603545900000: key v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.183.TheOne, tag capacity=1&value=-1.501064, value <Metadata>16140909857506937655</Metadata>

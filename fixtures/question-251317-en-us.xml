@@ -1,0 +1,1 @@
+<xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="question" type="table"><Question>Which company makes and sells the iPod?</Question><CorrectAnswer type="integer">3</CorrectAnswer><ChoiceList type="table"><XsorItem>Dell</XsorItem><XsorItem>Nokia</XsorItem><XsorItem>Apple</XsorItem></ChoiceList></xsor:object>

@@ -1,0 +1,57 @@
+---
+source: question-import/src/fit.rs
+expression: questions
+---
+[
+    Question {
+        id: QuestionId(
+            1699249,
+        ),
+        locale: "en-US",
+        difficulty: VeryEasy,
+        text: "Which planet is red?",
+        choices: [
+            "Wrong 1",
+            "Right",
+            "Wrong 3",
+        ],
+        correct: B,
+        categories: [
+            "science-nature",
+            "general-knowledge",
+        ],
+        source: "otdb",
+        origin: Origin {
+            category: Some(
+                "17",
+            ),
+            id: None,
+        },
+    },
+    Question {
+        id: QuestionId(
+            10379630,
+        ),
+        locale: "en-US",
+        difficulty: Hard,
+        text: "Which planet is blue?",
+        choices: [
+            "Right",
+            "Wrong 2",
+            "Wrong 3",
+        ],
+        correct: A,
+        categories: [
+            "general-knowledge",
+        ],
+        source: "otdb",
+        origin: Origin {
+            category: Some(
+                "9",
+            ),
+            id: Some(
+                "Q-42",
+            ),
+        },
+    },
+]

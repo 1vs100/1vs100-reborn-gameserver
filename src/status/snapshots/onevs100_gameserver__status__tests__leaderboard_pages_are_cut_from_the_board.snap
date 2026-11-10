@@ -1,0 +1,15 @@
+---
+source: src/status/mod.rs
+expression: "json(&get(\"/status/v1/leaderboard?offset=1&limit=1\"))"
+---
+{
+  "entries": [
+    {
+      "gamertag": "Bravo",
+      "points": 20,
+      "rank": 2
+    }
+  ],
+  "offset": 1,
+  "total": 3
+}

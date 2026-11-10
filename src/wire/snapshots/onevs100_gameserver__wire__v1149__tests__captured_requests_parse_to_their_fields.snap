@@ -1,0 +1,11 @@
+---
+source: src/wire/v1149.rs
+expression: "shown.join(\"\\n\")"
+---
+get_config: controller 0, execute time 0: get v1.Setup.MGS.1vs100.Config
+get_pangolin_config: controller 0, execute time 0: get v1.Setup.MGS.1vs100.Pangolin.Config
+userset_user_error: controller 0, execute time 0: userset e0000601484d4b37 v1.Log.MGS.1vs100.UserError.2159149064 "<xsor:object xmlns:xsor=\"http://schemas.xbox.com" ..
+set_the_mob: controller 0, execute time 134368627513250000: set v1.Session.MGS.1vs100.00000000-0000-0000-0000-000000000001.PRIMETIME.30.TheMob 764 bytes
+sum_rs_total_player_count: controller 0, execute time 134368599118250000: sum v1.Session.MGS.1vs100.00000000-0000-0000-0000-000000000001.PRIMETIME.1101.RSTotalPlayerCount 1
+top_mob_selection: controller 0, execute time 134368599138250000: top v1.Session.MGS.1vs100.00000000-0000-0000-0000-000000000001.PRIMETIME.1101.MobSelection capacity 101 score 0.5929319 "<Metadata>e0000601484d4b37</Metadata>"
+top_the_one: controller 0, execute time 134368599108250000: top v1.Session.MGS.1vs100.00000000-0000-0000-0000-000000000001.PRIMETIME.1101.TheOne capacity 1 score 0.5929319 "<Metadata>16140907667073616695</Metadata>"

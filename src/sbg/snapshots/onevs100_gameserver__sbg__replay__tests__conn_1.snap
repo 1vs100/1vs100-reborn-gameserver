@@ -1,0 +1,20 @@
+---
+source: src/sbg/replay.rs
+expression: "shown(first_conn, 16)"
+---
+    99068 conn=1 open
+    99068 conn=1 in cookie=0x0065 Register
+    99068 conn=1 out cookie=0x0065 kind=0x80 hex:00c800000000000000000000000000000000
+    99068 conn=1 in cookie=0x0063 Heartbeat
+    99068 conn=1 out cookie=0x0063 kind=0x83 hex:00c800000000000000000000000000000000
+    99089 conn=1 in cookie=0x0066 get v3.Setup.MGS.1vs100.Store.Pangolin.Config
+    99089 conn=1 out cookie=0x0066 kind=0x82 status=200 hex:0000000000000000
+    99185 conn=1 in cookie=0x0067 get v3.Setup.MGS.1vs100.Store.Config
+    99187 conn=1 out cookie=0x0067 kind=0x82 status=200 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="Config"
+    99332 conn=1 in cookie=0x0068 user get v3.Season.MGS.1vs100.UserStore.UserStorage xuid=e0000601484d4b37
+    99332 conn=1 out cookie=0x0068 kind=0x82 status=200 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="SBG.Act
+    99367 conn=1 in cookie=0x0069 set v3.Session.MGS.1vs100.Log.UserError.0 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.co
+    99367 conn=1 out cookie=0x0069 kind=0x82 status=200 
+    99919 conn=1 in cookie=0x006a get v3.Setup.MGS.1vs100.Store.Config.Week6
+    99919 conn=1 out cookie=0x006a kind=0x82 status=200 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="Prizing
+   100960 conn=1 in cookie=0x006b get v3.Setup.MGS.1vs100.Store.Sessions.00000000-0000-0000-0000-000000000001.MergedLaunchData

@@ -1,0 +1,161 @@
+# Rendered by deployment/nginx/serve.sh - do not edit the rendered copy.
+#
+# The stack's nginx, behind the host's nginx: the site, the status API and the consoles' Grid
+# and livehost requests on __LISTEN__, and the admin UI on its own address. The host's nginx
+# owns port 80 and HTTPS and forwards to __LISTEN__ (deployment/host-nginx.conf).
+worker_processes 1;
+pid __RUN__/nginx.pid;
+
+events { worker_connections 4096; }
+
+http {
+    # The upstreams are proxied through variables, so a named one is looked up per request:
+    # nginx starts while the gameserver is down and follows a new address. serve.sh renders a
+    # resolver here only for a named upstream.
+    __RESOLVER__
+
+    # Every visitor polls; a log of them would grow without bound in the runtime directory.
+    access_log off;
+    client_body_temp_path __RUN__/tmp/client;
+    proxy_temp_path       __RUN__/tmp/proxy;
+    fastcgi_temp_path     __RUN__/tmp/fastcgi;
+    uwsgi_temp_path       __RUN__/tmp/uwsgi;
+    scgi_temp_path        __RUN__/tmp/scgi;
+
+    include      __MIME__;
+    default_type application/octet-stream;
+    types_hash_max_size 2048;
+    types_hash_bucket_size 128;
+    sendfile     on;
+    server_tokens off;
+    client_header_timeout 10s;
+    client_body_timeout 10s;
+    keepalive_timeout 15s;
+    send_timeout 30s;
+
+    # Public polling is answered from here for as long as the API's Cache-Control allows.
+    proxy_cache_path __RUN__/tmp/status-cache keys_zone=status:1m max_size=16m inactive=5m;
+    limit_req_zone $binary_remote_addr zone=status_per_client:4m rate=10r/s;
+    # Consoles share this front with the public; no one client may hold its connections.
+    limit_conn_zone $binary_remote_addr zone=per_client:4m;
+
+    server {
+        listen __LISTEN__;
+        server_name _;
+
+        # Every request comes through the host's nginx, which names the client in X-Real-IP.
+        # Only the addresses it connects from are trusted with the header: loopback, and in the
+        # image the private ranges a compose network's gateway is in.
+        __REAL_IP_FROM__
+        real_ip_header X-Real-IP;
+
+        root __ROOT__/site/dist;
+        index index.html;
+        limit_conn per_client 32;
+
+        # The Host header passes unchanged: the Grid signs its replies over it, and the console
+        # rejects a reply signed for another host.
+        location /grid/ {
+            set $grid_upstream http://__GRID__;
+            proxy_pass $grid_upstream;
+            proxy_connect_timeout 3s;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header Connection "";
+            proxy_buffering off;
+            proxy_read_timeout 120s;
+        }
+
+        location = /livehost.mp3 {
+            set $grid_upstream http://__GRID__;
+            proxy_pass $grid_upstream;
+            proxy_connect_timeout 3s;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header Connection "";
+            proxy_buffering off;
+            proxy_read_timeout 120s;
+        }
+
+        location /status/ {
+            limit_req zone=status_per_client burst=20 nodelay;
+            limit_req_status 429;
+            limit_except GET HEAD { deny all; }
+            set $status_upstream http://__STATUS__;
+            proxy_pass $status_upstream;
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            proxy_cache status;
+            # Unknown parameters are ignored upstream, so they must not make new cache entries.
+            proxy_cache_key "$uri|$arg_offset|$arg_limit";
+            proxy_cache_lock on;
+            # Never stale on error: the page must show when the server is down.
+            proxy_cache_use_stale updating;
+            proxy_connect_timeout 3s;
+            proxy_read_timeout 10s;
+        }
+
+        location /admin/ {
+            return 404;
+        }
+
+        # Hashed build assets can be cached forever; index.html never.
+        location /assets/ {
+            add_header Cache-Control "public, max-age=31536000, immutable";
+            add_header X-Content-Type-Options nosniff;
+            try_files $uri =404;
+        }
+
+        location = /index.html {
+            add_header Cache-Control "no-cache";
+            add_header X-Content-Type-Options nosniff;
+            add_header Referrer-Policy strict-origin-when-cross-origin;
+            add_header X-Frame-Options DENY;
+        }
+
+        location / {
+            add_header X-Content-Type-Options nosniff;
+            add_header Referrer-Policy strict-origin-when-cross-origin;
+            add_header X-Frame-Options DENY;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
+    # Admin UI: unauthenticated, so GAMESERVER_UI_LISTEN stays on loopback or a trusted network.
+    server {
+        listen __UI_LISTEN__;
+        server_name _;
+        client_max_body_size 32m;
+
+        root __ROOT__/frontend/dist;
+        index index.html;
+
+        # Hashed build assets can be cached forever; index.html never.
+        location /assets/ {
+            add_header Cache-Control "public, max-age=31536000, immutable";
+            try_files $uri =404;
+        }
+
+        location = /index.html {
+            add_header Cache-Control "no-store";
+        }
+
+        location /admin/ {
+            set $admin_upstream http://__ADMIN__;
+            proxy_pass $admin_upstream;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Connection "";
+            proxy_connect_timeout 3s;
+            proxy_read_timeout 30s;
+            proxy_send_timeout 30s;
+            proxy_buffering off;
+            proxy_request_buffering off;
+        }
+
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+    }
+}

@@ -1,0 +1,13 @@
+---
+source: src/sbg/message.rs
+expression: "format!(\"{captured}\\n{lobby}\")"
+---
+register: Register
+heartbeat: Heartbeat
+get_config: Request { key: v3.Setup.MGS.1vs100.Store.Config, action: Get, execute_at: None }
+get_pangolin_config: Request { key: v3.Setup.MGS.1vs100.Store.Pangolin.Config, action: Get, execute_at: None }
+userset_user_error: Request { key: v3.Session.MGS.1vs100.Log.UserError.2159149064, action: Set(692 bytes "<xsor:object xmlns:xsor=\"http://schemas.xbox.com" .. "k.lua.135,</xsor:object>"), execute_at: None }
+sum_rs_total_player_count: Request { key: v3.Session.MGS.1vs100.Sum.00000000-0000-0000-0000-000000000001.PRIMETIME.1101.RSTotalPlayerCount, action: SumAdd(1.0), execute_at: Some(1792386311825) }
+top_mob_selection: Request { key: v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.1101.MobSelection, action: TopNPost(capacity 101, score 0.5929319, 37 bytes "<Metadata>e0000601484d4b37</Metadata>"), execute_at: Some(1792386313825) }
+top_the_one: Request { key: v3.Session.MGS.1vs100.TopN.00000000-0000-0000-0000-000000000001.PRIMETIME.1101.TheOne, action: TopNPost(capacity 1, score 0.5929319, 41 bytes "<Metadata>16140907667073616695</Metadata>"), execute_at: Some(1792386310825) }
+set_the_mob: Request { key: v3.Session.MGS.1vs100.Store.00000000-0000-0000-0000-000000000001.PRIMETIME.30.TheMob, action: Set(5611 bytes "<xsor:object xmlns:xsor=\"http://schemas.xbox.com" .. "></TheOne></xsor:object>"), execute_at: Some(1792389151325) }

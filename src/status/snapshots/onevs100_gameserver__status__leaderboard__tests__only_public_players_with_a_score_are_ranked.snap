@@ -1,0 +1,31 @@
+---
+source: src/status/leaderboard.rs
+expression: board
+---
+[
+    (
+        1,
+        "Recorded",
+        110271,
+    ),
+    (
+        2,
+        "First",
+        500,
+    ),
+    (
+        3,
+        "SecondA",
+        20,
+    ),
+    (
+        3,
+        "SecondB",
+        20,
+    ),
+    (
+        5,
+        "Third",
+        10,
+    ),
+]

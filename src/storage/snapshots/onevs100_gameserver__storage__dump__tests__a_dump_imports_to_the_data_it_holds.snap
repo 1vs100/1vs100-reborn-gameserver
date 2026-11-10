@@ -1,0 +1,188 @@
+---
+source: src/storage/dump.rs
+expression: "Data::from_dump(&dump()).unwrap()"
+---
+Data {
+    players: {
+        Xuid(
+            16140908281431895321,
+        ): PlayerRecord {
+            xuid: Xuid(
+                16140908281431895321,
+            ),
+            gamertag: Some(
+                "Player1",
+            ),
+            first_seen: Utc {
+                unix_ms: 100000,
+            },
+            last_seen: Utc {
+                unix_ms: 200000,
+            },
+            avatar: Some(
+                [
+                    137,
+                    80,
+                    78,
+                    71,
+                ],
+            ),
+        },
+    },
+    blobs: {
+        (
+            UserStorage,
+            Xuid(
+                16140908281431895321,
+            ),
+        ): [
+            60,
+            88,
+            115,
+            111,
+            114,
+            79,
+            98,
+            106,
+            101,
+            99,
+            116,
+            32,
+            47,
+            62,
+        ],
+        (
+            UserStorage,
+            Xuid(
+                16140909200376941367,
+            ),
+        ): [
+            60,
+            88,
+            115,
+            111,
+            114,
+            79,
+            98,
+            106,
+            101,
+            99,
+            116,
+            32,
+            47,
+            62,
+        ],
+    },
+    counters: {
+        "v3.Stats.MGS.1vs100.Sum.StatsUpdate.TotalSeen.251317": 3.0,
+    },
+    programme: Some(
+        Programme {
+            zone: Zone {
+                name: "America/New_York",
+                zone: TimeZone(
+                    TZif(
+                        "America/New_York",
+                    ),
+                ),
+            },
+            primetime_at: PrimetimeSlots(
+                [
+                    LocalTime(
+                        20:00:00.0,
+                    ),
+                ],
+            ),
+            primetime: 3600s,
+            extended_play: 1800s,
+            min_extended_play: 1800s,
+        },
+    ),
+    specials: {
+        SpecialSlot {
+            date: LocalDate(
+                2026-10-24,
+            ),
+            at: LocalTime(
+                20:00:00.0,
+            ),
+        }: SpecialEpisode {
+            date: LocalDate(
+                2026-10-24,
+            ),
+            at: LocalTime(
+                20:00:00.0,
+            ),
+            title: "Movie Night",
+            category: "otdb:11",
+            length: 1800s,
+            mode: ExtendedPlay,
+            artwork: Some(
+                ThemeArtwork(
+                    "Community",
+                ),
+            ),
+        },
+    },
+    shows: {
+        "session": Show {
+            session_id: "session",
+            episode_id: "episode",
+            plan: PlannedShow {
+                start: Utc {
+                    unix_ms: 1792785600000,
+                },
+                end: Utc {
+                    unix_ms: 1792789200000,
+                },
+                kind: Special {
+                    title: "Movie Night",
+                    category: "otdb:11",
+                    mode: Primetime,
+                    artwork: None,
+                },
+            },
+            manual: false,
+        },
+    },
+    questions: QuestionBank {
+        questions: [
+            Question {
+                id: QuestionId(
+                    251317,
+                ),
+                locale: "en-us",
+                difficulty: Medium,
+                text: "Which planet is red?",
+                choices: [
+                    "Earth",
+                    "Mars",
+                    "Venus",
+                ],
+                correct: B,
+                categories: [
+                    "science-nature",
+                ],
+                source: "otdb",
+                origin: Origin {
+                    category: None,
+                    id: None,
+                },
+            },
+        ],
+        categories: [
+            Category {
+                id: "science-nature",
+                name: "Science & Nature",
+            },
+        ],
+        sources: [
+            Source {
+                id: "otdb",
+                name: "Open Trivia Database",
+                licence: "CC BY-SA 4.0",
+                url: "https://opentdb.com",
+            },
+        ],
+    },
+}

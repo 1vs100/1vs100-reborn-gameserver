@@ -1,0 +1,11 @@
+---
+source: src/sbg/record.rs
+expression: "shown.join(\"\\n\")"
+---
+the settings this server records: Settings { protocol: V1149, options: SimulationOptions { synthetic_mob: true, synthetic_crowd: 60 }, server_flow: true, schedule: false, served: ServedConfig { joining_percentage: 0, hosting_percentage: 100, matchmake_end_game_shutdown: Some(0) } }
+the two switches apart: Settings { protocol: V1149, options: SimulationOptions { synthetic_mob: false, synthetic_crowd: 60 }, server_flow: false, schedule: true, served: ServedConfig { joining_percentage: 50, hosting_percentage: 50, matchmake_end_game_shutdown: None } }
+the unserved option off: Settings { protocol: V1149, options: SimulationOptions { synthetic_mob: true, synthetic_crowd: 60 }, server_flow: true, schedule: false, served: ServedConfig { joining_percentage: 50, hosting_percentage: 50, matchmake_end_game_shutdown: None } }
+before the percentages were recorded: Settings { protocol: V1149, options: SimulationOptions { synthetic_mob: true, synthetic_crowd: 60 }, server_flow: true, schedule: false, served: ServedConfig { joining_percentage: 50, hosting_percentage: 50, matchmake_end_game_shutdown: None } }
+joining recorded, hosting not: Settings { protocol: V1149, options: SimulationOptions { synthetic_mob: true, synthetic_crowd: 60 }, server_flow: true, schedule: false, served: ServedConfig { joining_percentage: 0, hosting_percentage: 50, matchmake_end_game_shutdown: None } }
+no shutdown recorded: Settings { protocol: V1149, options: SimulationOptions { synthetic_mob: true, synthetic_crowd: 60 }, server_flow: true, schedule: false, served: ServedConfig { joining_percentage: 0, hosting_percentage: 100, matchmake_end_game_shutdown: None } }
+other served percentages: Settings { protocol: V1149, options: SimulationOptions { synthetic_mob: true, synthetic_crowd: 60 }, server_flow: true, schedule: false, served: ServedConfig { joining_percentage: 7, hosting_percentage: 9, matchmake_end_game_shutdown: Some(11) } }

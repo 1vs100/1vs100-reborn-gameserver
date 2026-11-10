@@ -1,0 +1,192 @@
+---
+source: src/xsor/table.rs
+expression: parsed
+---
+[
+    Some(
+        Node {
+            name: "XsorObject",
+            attrs: [
+                (
+                    "name",
+                    "question",
+                ),
+                (
+                    "type",
+                    "table",
+                ),
+            ],
+            content: Children(
+                [
+                    Node {
+                        name: "Question",
+                        attrs: [],
+                        content: Text(
+                            "it&apos;s &lt;1&gt;",
+                        ),
+                    },
+                    Node {
+                        name: "CorrectAnswer",
+                        attrs: [
+                            (
+                                "type",
+                                "integer",
+                            ),
+                        ],
+                        content: Text(
+                            "2",
+                        ),
+                    },
+                    Node {
+                        name: "ChoiceList",
+                        attrs: [
+                            (
+                                "type",
+                                "table",
+                            ),
+                        ],
+                        content: Children(
+                            [
+                                Node {
+                                    name: "XsorItem",
+                                    attrs: [],
+                                    content: Text(
+                                        "a",
+                                    ),
+                                },
+                                Node {
+                                    name: "XsorItem",
+                                    attrs: [
+                                        (
+                                            "subtype",
+                                            "x&amp;y",
+                                        ),
+                                        (
+                                            "type",
+                                            "float",
+                                        ),
+                                    ],
+                                    content: Text(
+                                        "1.5",
+                                    ),
+                                },
+                            ],
+                        ),
+                    },
+                    Node {
+                        name: "Empty",
+                        attrs: [
+                            (
+                                "type",
+                                "table",
+                            ),
+                        ],
+                        content: Children(
+                            [],
+                        ),
+                    },
+                    Node {
+                        name: "SelfClosed",
+                        attrs: [],
+                        content: Empty,
+                    },
+                    Node {
+                        name: "Metadata",
+                        attrs: [],
+                        content: Children(
+                            [
+                                Node {
+                                    name: "x",
+                                    attrs: [],
+                                    content: Text(
+                                        "kept",
+                                    ),
+                                },
+                            ],
+                        ),
+                    },
+                ],
+            ),
+        },
+    ),
+    Some(
+        Node {
+            name: "xsor:object",
+            attrs: [
+                (
+                    "xmlns:xsor",
+                    "http://schemas.xbox.com/xsor",
+                ),
+                (
+                    "xmlns",
+                    "http://schemas.xbox.com/SBG",
+                ),
+                (
+                    "name",
+                    "question",
+                ),
+                (
+                    "type",
+                    "table",
+                ),
+            ],
+            content: Children(
+                [
+                    Node {
+                        name: "Question",
+                        attrs: [],
+                        content: Text(
+                            "Which company makes and sells the iPod?",
+                        ),
+                    },
+                    Node {
+                        name: "CorrectAnswer",
+                        attrs: [
+                            (
+                                "type",
+                                "integer",
+                            ),
+                        ],
+                        content: Text(
+                            "3",
+                        ),
+                    },
+                    Node {
+                        name: "ChoiceList",
+                        attrs: [
+                            (
+                                "type",
+                                "table",
+                            ),
+                        ],
+                        content: Children(
+                            [
+                                Node {
+                                    name: "XsorItem",
+                                    attrs: [],
+                                    content: Text(
+                                        "Dell",
+                                    ),
+                                },
+                                Node {
+                                    name: "XsorItem",
+                                    attrs: [],
+                                    content: Text(
+                                        "Nokia",
+                                    ),
+                                },
+                                Node {
+                                    name: "XsorItem",
+                                    attrs: [],
+                                    content: Text(
+                                        "Apple",
+                                    ),
+                                },
+                            ],
+                        ),
+                    },
+                ],
+            ),
+        },
+    ),
+]

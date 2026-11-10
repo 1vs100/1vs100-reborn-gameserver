@@ -1,0 +1,176 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: ${{ matrix.task }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [fmt, test, clippy, build]
+    # The storage tests run against this database as well. An empty image starts no service.
+    services:
+      postgres:
+        image: ${{ matrix.task == 'test' && 'postgres:17' || '' }}
+        env:
+          POSTGRES_USER: onevs100
+          POSTGRES_PASSWORD: onevs100
+          POSTGRES_DB: onevs100_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U onevs100" --health-interval 5s --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - name: fmt
+        if: matrix.task == 'fmt'
+        run: cargo fmt --check
+      - name: test
+        if: matrix.task == 'test'
+        run: cargo test --locked --all-targets
+        env:
+          GAMESERVER_TEST_DATABASE_URL: postgres://onevs100:onevs100@localhost/onevs100_test
+      - name: clippy
+        if: matrix.task == 'clippy'
+        run: cargo clippy --locked --all-targets -- -D warnings
+      - name: build
+        if: matrix.task == 'build'
+        run: cargo build --locked --release --all-targets
+
+  # Regenerates the API client from the Rust OpenAPI document, typechecks and builds the UI, so
+  # a Rust change that breaks the frontend fails here instead of inside a Docker build.
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      # `pnpm api:generate` runs `cargo run --offline`.
+      - run: cargo fetch --locked
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+        working-directory: frontend
+      - run: pnpm build
+        working-directory: frontend
+      # Laid out as deployment/nginx/serve.sh expects under its ONEVS100_ROOT.
+      - run: tar -czf onevs100-admin-ui.tar.gz frontend/dist
+      - uses: actions/upload-artifact@v7
+        with:
+          name: onevs100-admin-ui
+          path: onevs100-admin-ui.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fetch --locked
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+        working-directory: site
+      - run: pnpm build
+        working-directory: site
+      # Laid out as deployment/nginx/serve.sh expects under its ONEVS100_ROOT.
+      - run: tar -czf onevs100-site.tar.gz site/dist
+      - uses: actions/upload-artifact@v7
+        with:
+          name: onevs100-site
+          path: onevs100-site.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  docker:
+    name: docker ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [gameserver, nginx]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to GHCR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push ${{ matrix.target }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deployment/Dockerfile
+          target: ${{ matrix.target }}
+          build-args: GAMESERVER_BUILD_COMMIT=${{ github.sha }}
+          load: true
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: |
+            ghcr.io/${{ github.repository }}-${{ matrix.target }}:latest
+            ghcr.io/${{ github.repository }}-${{ matrix.target }}:main
+            ghcr.io/${{ github.repository }}-${{ matrix.target }}:${{ github.sha }}
+      # The binary must start in its runtime image: without GAMESERVER_BIND it exits 2 and says so.
+      - if: matrix.target == 'gameserver'
+        run: |
+          set +e
+          output=$(docker run --rm ghcr.io/${{ github.repository }}-gameserver:${{ github.sha }} 2>&1); status=$?
+          echo "$output"
+          [ "$status" -eq 2 ] && grep -q "GAMESERVER_BIND is required" <<<"$output"
+      # The nginx image renders a configuration its nginx accepts, with the gameserver at an
+      # address and by a name as on the compose network.
+      - if: matrix.target == 'nginx'
+        run: |
+          image=ghcr.io/${{ github.repository }}-nginx:${{ github.sha }}
+          docker run --rm -e GAMESERVER_HTTP_ADDR=127.0.0.1:8090 \
+            --entrypoint /app/deployment/nginx/serve.sh "$image" test
+          docker run --rm -e GAMESERVER_HTTP_ADDR=gameserver:8090 -e GAMESERVER_STATUS_ADDR=gameserver:8082 \
+            -e GAMESERVER_ADMIN_ADDR=gameserver:8081 --entrypoint /app/deployment/nginx/serve.sh "$image" test
+  compose:
+    name: compose config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: cp .env.example .env
+      - run: docker compose --env-file .env -f deployment/compose.yaml config -q
+      - run: docker compose --env-file .env -f deployment/compose.yaml -f deployment/compose.build.yaml config -q
+      # Exactly these ports are published: the game ports on GAMESERVER_BIND of .env.example, and
+      # the site front for the host's nginx and the admin UI on loopback. The database publishes
+      # none.
+      - run: |
+          docker compose --env-file .env -f deployment/compose.yaml config --format json \
+            | jq -e '([.services[].network_mode == "host"] | any | not)
+                and ([.services[].ports[]? | "\(.host_ip):\(.published)/\(.protocol // "tcp")"] | sort)
+                  == ["127.0.0.1:8080/tcp", "127.0.0.1:8083/tcp", "192.0.2.10:1000/tcp",
+                      "192.0.2.10:1001/tcp", "192.0.2.10:1002/tcp", "192.0.2.10:1123/udp",
+                      "192.0.2.10:123/udp"]'
