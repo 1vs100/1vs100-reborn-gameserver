@@ -1,14 +1,81 @@
 //! Live host audio as the title's Windows Media player reads it over HTTP: an ASF file split
 //! into MMS-over-HTTP chunks, one header chunk, one chunk per data packet and an end chunk.
 
-use std::{fmt, sync::LazyLock};
+use std::{
+    fmt, io,
+    path::{Path, PathBuf},
+    sync::Arc,
+};
 
 /// 2 minutes of WMA; the title fetches it for each live host segment and plays it from the start;
 /// `scripts/generate_livehost_audio.sh` writes it.
 const LIVEHOST_ASF: &[u8] = include_bytes!("../../assets/livehost.wma");
 
-pub(super) static LIVEHOST_STREAM: LazyLock<Result<Vec<u8>, AsfError>> =
-    LazyLock::new(|| mmsh_stream(LIVEHOST_ASF));
+/// The live host audio framed for the title's player, ready to send.
+#[derive(Clone, Debug)]
+pub struct LivehostStream(Arc<[u8]>);
+
+impl LivehostStream {
+    /// The stream of `file`, else of the built-in asset.
+    pub fn load(file: Option<&Path>) -> Result<Self, LivehostError> {
+        let stream = match file {
+            None => mmsh_stream(LIVEHOST_ASF)
+                .map_err(|source| LivehostError::Asf { path: None, source })?,
+            Some(path) => {
+                let asf = std::fs::read(path).map_err(|source| LivehostError::Read {
+                    path: path.to_owned(),
+                    source,
+                })?;
+                mmsh_stream(&asf).map_err(|source| LivehostError::Asf {
+                    path: Some(path.to_owned()),
+                    source,
+                })?
+            }
+        };
+        Ok(Self(stream.into()))
+    }
+
+    pub fn bytes(&self) -> &[u8] {
+        &self.0
+    }
+}
+
+#[derive(Debug)]
+pub enum LivehostError {
+    Read {
+        path: PathBuf,
+        source: io::Error,
+    },
+    /// `path` is `None` for the built-in asset.
+    Asf {
+        path: Option<PathBuf>,
+        source: AsfError,
+    },
+}
+
+impl fmt::Display for LivehostError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Read { path, source } => {
+                write!(f, "livehost file {}: {source}", path.display())
+            }
+            Self::Asf {
+                path: Some(path),
+                source,
+            } => write!(f, "livehost file {}: {source}", path.display()),
+            Self::Asf { path: None, source } => write!(f, "built-in livehost asset: {source}"),
+        }
+    }
+}
+
+impl std::error::Error for LivehostError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::Read { source, .. } => Some(source),
+            Self::Asf { source, .. } => Some(source),
+        }
+    }
+}
 
 const HEADER_OBJECT: [u8; 16] = guid(
     0x75B22630,
@@ -191,6 +258,21 @@ pub fn mmsh_stream(asf: &[u8]) -> Result<Vec<u8>, AsfError> {
 mod tests {
     use super::*;
 
+    /// A file in the temp directory, removed when dropped, so a failing test leaves none behind.
+    struct TempFile(PathBuf);
+
+    impl TempFile {
+        fn new(name: &str) -> Self {
+            Self(std::env::temp_dir().join(format!("{name}-{}.wma", std::process::id())))
+        }
+    }
+
+    impl Drop for TempFile {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_file(&self.0);
+        }
+    }
+
     fn chunks(stream: &[u8]) -> Vec<(&[u8], &[u8])> {
         let mut chunks = Vec::new();
         let mut rest = stream;
@@ -204,8 +286,8 @@ mod tests {
 
     #[test]
     fn livehost_asset_frames_as_header_packets_and_end() {
-        let stream = LIVEHOST_STREAM.as_ref().expect("asset frames");
-        let chunks = chunks(stream);
+        let stream = LivehostStream::load(None).expect("asset frames");
+        let chunks = chunks(stream.bytes());
         let (kind, header) = chunks[0];
         assert_eq!(kind, CHUNK_HEADER);
         assert_eq!(&header[..8], &[0, 0, 0, 0, 0, 0x0C, header[6], header[7]]);
@@ -245,5 +327,35 @@ mod tests {
             mmsh_stream(&LIVEHOST_ASF[..100]),
             Err(AsfError::Truncated { offset: 0 })
         );
+    }
+
+    #[test]
+    fn a_livehost_file_replaces_the_built_in_asset() {
+        let file = TempFile::new("livehost-file");
+        let path = &file.0;
+        let mut asf = LIVEHOST_ASF.to_vec();
+        // A different file: the last packet's padding byte.
+        *asf.last_mut().unwrap() ^= 0xFF;
+        std::fs::write(path, &asf).unwrap();
+        let served = LivehostStream::load(Some(path)).unwrap();
+        let built_in = LivehostStream::load(None).unwrap();
+        assert_eq!(served.bytes().len(), built_in.bytes().len());
+        assert_ne!(served.bytes(), built_in.bytes());
+    }
+
+    #[test]
+    fn a_livehost_file_that_is_missing_or_not_asf_names_the_file() {
+        let file = TempFile::new("livehost-bad");
+        let path = &file.0;
+        assert!(matches!(
+            LivehostStream::load(Some(path)),
+            Err(LivehostError::Read { path: p, .. }) if p == *path
+        ));
+        std::fs::write(path, [0; 64]).unwrap();
+        assert!(matches!(
+            LivehostStream::load(Some(path)),
+            Err(LivehostError::Asf { path: Some(p), source: AsfError::UnexpectedObject { .. } })
+                if p == *path
+        ));
     }
 }

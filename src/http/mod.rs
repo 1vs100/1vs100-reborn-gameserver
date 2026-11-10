@@ -20,6 +20,7 @@ pub(crate) mod request;
 
 pub use ads::serve_ads;
 pub(crate) use ads::serve_ads_connection;
+pub use livehost::{LivehostError, LivehostStream};
 use request::{
     Limits, READ_IDLE_TIMEOUT, Request, empty_response, idle, parse_request, serve_requests,
     status_response,
@@ -32,6 +33,7 @@ pub struct GridService {
     pub protocol: Protocol,
     pub config: GridConfig,
     pub schedule: Arc<Mutex<Schedule>>,
+    pub livehost: LivehostStream,
 }
 
 pub fn handle_request(request: &[u8], now: SystemTime, service: &GridService) -> Vec<u8> {
@@ -105,6 +107,7 @@ fn route(request: Request<'_>, now: SystemTime, service: &GridService) -> Vec<u8
         protocol,
         config,
         schedule,
+        livehost,
     } = service;
     let protocol = *protocol;
     tracing::trace!(
@@ -126,14 +129,8 @@ fn route(request: Request<'_>, now: SystemTime, service: &GridService) -> Vec<u8
         return empty_response(404, "Not Found");
     }
     if request.path == "/livehost.mp3" {
-        let stream = match livehost::LIVEHOST_STREAM.as_ref() {
-            Ok(stream) => stream,
-            Err(error) => {
-                tracing::error!(%error, "livehost asset is not a framable ASF file");
-                return empty_response(500, "Internal Server Error");
-            }
-        };
         tracing::info!("serving livehost stream");
+        let stream = livehost.bytes();
         // The whole stream at once; the player buffers it and plays at its own pace.
         let mut response = format!(
             "HTTP/1.1 200 OK\r\nContent-Type: application/x-mms-framed\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
@@ -181,6 +178,7 @@ mod tests {
             protocol,
             config: GridConfig::default(),
             schedule: Default::default(),
+            livehost: LivehostStream::load(None).unwrap(),
         }
     }
     use flate2::read::GzDecoder;

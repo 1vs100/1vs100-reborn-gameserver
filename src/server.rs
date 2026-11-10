@@ -122,6 +122,7 @@ pub fn run(config: Config, storage: Arc<dyn crate::storage::Storage>) -> io::Res
         dump_game_state,
         record_sbg,
         ads,
+        livehost_file,
         database: _,
     } = config;
     let ports = Ports::for_protocol(
@@ -136,6 +137,8 @@ pub fn run(config: Config, storage: Arc<dyn crate::storage::Storage>) -> io::Res
         Some(ads) => Ads::Massive(Box::new(load_massive_ads(&ads, ports.ads)?)),
         None => Ads::Empty,
     };
+    let livehost =
+        http::LivehostStream::load(livehost_file.as_deref()).map_err(io::Error::other)?;
     let build = crate::build_info::current();
     tracing::info!(
         built = %build.built.to_xsor(),
@@ -181,7 +184,7 @@ pub fn run(config: Config, storage: Arc<dyn crate::storage::Storage>) -> io::Res
             .map_err(io::Error::other)?;
     }
     with_bound_sockets(listen_ip, &ports, |sockets| {
-        serve_bound(sockets, protocol, key, grid, app, ads)
+        serve_bound(sockets, protocol, key, grid, app, ads, livehost)
     })?
 }
 
@@ -304,6 +307,7 @@ fn serve_bound(
     grid: crate::grid::GridConfig,
     app: Arc<App>,
     ads: Ads,
+    livehost: http::LivehostStream,
 ) -> io::Result<()> {
     let BoundSockets {
         sntp,
@@ -323,6 +327,7 @@ fn serve_bound(
                 protocol,
                 config: grid,
                 schedule: Arc::clone(&app.schedule),
+                livehost,
             };
             move || http::serve(http, service)
         }),

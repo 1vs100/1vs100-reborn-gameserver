@@ -109,6 +109,8 @@ Compose must run as root because the gameserver tells consoles apart by their ad
 
 To serve ads, start the stack once, then put the massived configuration and its content into the `ads` volume, which the gameserver mounts read-only at `/ads`. Then set `GAMESERVER_ADS_CONFIG=/ads/massived.toml` in `.env` and recreate the gameserver. The volume is read-only, so leave the `[capture]` section out of the configuration or point its path at `/logs`.
 
+Your own live host audio can go in the same volume. Copy it in as `livehost.wma` and set `GAMESERVER_LIVEHOST_FILE=/ads/livehost.wma`.
+
 ```
 docker run --rm -v onevs100_ads:/ads -v "$PWD/ads:/src:ro" alpine cp -r /src/. /ads/
 ```

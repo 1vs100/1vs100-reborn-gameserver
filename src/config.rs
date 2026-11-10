@@ -69,6 +69,7 @@ pub const SETTINGS: &[Setting] = &[
     setting("GAMESERVER_RECORD_SBG", None),
     setting("GAMESERVER_ADS_CONFIG", None),
     setting("GAMESERVER_PUBLIC_HOST", None),
+    setting("GAMESERVER_LIVEHOST_FILE", None),
 ];
 
 /// Server settings; test `Default`s keep simulation and flow off.
@@ -100,6 +101,8 @@ pub struct Config {
     pub record_sbg: Option<PathBuf>,
     /// massived on the ads port; `None` serves the built-in endpoint without ad content.
     pub ads: Option<AdsConfig>,
+    /// ASF file served as the live host stream; `None` serves the built-in asset.
+    pub livehost_file: Option<PathBuf>,
 }
 
 /// Where persistent data lives.
@@ -237,6 +240,7 @@ impl Config {
         let groups = read.groups();
         let dump_game_state = vars.get("GAMESERVER_DUMP_GAMESTATE").map(Into::into);
         let record_sbg = vars.get("GAMESERVER_RECORD_SBG").map(Into::into);
+        let livehost_file = vars.get("GAMESERVER_LIVEHOST_FILE").map(Into::into);
         let public_host = read.value_with(
             "GAMESERVER_PUBLIC_HOST",
             "a host name or IPv4 address",
@@ -282,6 +286,7 @@ impl Config {
                     dump_game_state,
                     record_sbg,
                     ads,
+                    livehost_file,
                 })
             }
             _ => Err(errors),
