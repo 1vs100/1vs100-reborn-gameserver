@@ -107,6 +107,12 @@ Compose sets the gameserver's own addresses inside the container. It ignores `GA
 
 Compose must run as root because the gameserver tells consoles apart by their address. Rootless Docker and rootless Podman make every console arrive from the same address.
 
+To serve ads, start the stack once, then put the massived configuration and its content into the `ads` volume, which the gameserver mounts read-only at `/ads`. Then set `GAMESERVER_ADS_CONFIG=/ads/massived.toml` in `.env` and recreate the gameserver. The volume is read-only, so leave the `[capture]` section out of the configuration or point its path at `/logs`.
+
+```
+docker run --rm -v onevs100_ads:/ads -v "$PWD/ads:/src:ro" alpine cp -r /src/. /ads/
+```
+
 To follow the logs, run this.
 
 ```
