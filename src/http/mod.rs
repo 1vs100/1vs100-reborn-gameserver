@@ -128,7 +128,7 @@ fn route(request: Request<'_>, now: SystemTime, service: &GridService) -> Vec<u8
         );
         return empty_response(404, "Not Found");
     }
-    if request.path == "/livehost.mp3" {
+    if request.path == "/livehost.wma" {
         tracing::info!("serving livehost stream");
         let stream = livehost.bytes();
         // The whole stream at once; the player buffers it and plays at its own pace.
@@ -267,7 +267,7 @@ mod tests {
     #[test]
     fn livehost_get_serves_mms_framed_wma() {
         let request =
-            b"GET /livehost.mp3 HTTP/1.1\r\nHost: 192.0.2.10\r\nContent-Length: 3\r\n\r\n\r\n\0";
+            b"GET /livehost.wma HTTP/1.1\r\nHost: 192.0.2.10\r\nContent-Length: 3\r\n\r\n\r\n\0";
         assert!(
             matches!(request_len(request, &Limits::CONSOLE), Ok(Some(len)) if len == request.len())
         );

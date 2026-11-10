@@ -66,7 +66,7 @@ http {
             proxy_read_timeout 120s;
         }
 
-        location = /livehost.mp3 {
+        location = /livehost.wma {
             set $grid_upstream http://__GRID__;
             proxy_pass $grid_upstream;
             proxy_connect_timeout 3s;

@@ -457,7 +457,7 @@ mod tests {
 
         let merged = hit_xml(&handle(get(3, MERGED), &store).unwrap());
         assert!(merged.contains("name=\"MergedLaunchData\""));
-        assert!(merged.contains("<LiveStreamPathURI type=\"table\"><en-us>http://127.0.0.1/livehost.mp3</en-us></LiveStreamPathURI>"));
+        assert!(merged.contains("<LiveStreamPathURI type=\"table\"><en-us>http://127.0.0.1/livehost.wma</en-us></LiveStreamPathURI>"));
         assert!(merged.contains("<Duration>600</Duration>"));
 
         let languages = hit_xml(&handle(get(4, LANGUAGES), &store).unwrap());

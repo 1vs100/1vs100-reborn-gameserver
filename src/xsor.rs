@@ -210,7 +210,7 @@ pub fn merged_launch_data_fixture(showing: &Showing, numeric: bool, service_host
             Node::string("EpisodeId", episode_id),
             en_us(
                 "LiveStreamPathURI",
-                format!("http://{service_host}/livehost.mp3"),
+                format!("http://{service_host}/livehost.wma"),
             ),
             Node::string("StartTime", start),
             Node::string("EndTime", end),

@@ -260,7 +260,7 @@ launch data, Primetime, numbers:
 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
 <EpisodeId>episode</EpisodeId>
 <LiveStreamPathURI type="table">
-<en-us>http://192.0.2.10/livehost.mp3</en-us>
+<en-us>http://192.0.2.10/livehost.wma</en-us>
 </LiveStreamPathURI>
 <StartTime>2026-10-23T20:00:00.000Z</StartTime>
 <EndTime>2026-10-23T21:00:00.000Z</EndTime>
@@ -287,7 +287,7 @@ launch data, Extended Play, strings:
 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
 <EpisodeId>episode</EpisodeId>
 <LiveStreamPathURI type="table">
-<en-us>http://192.0.2.10/livehost.mp3</en-us>
+<en-us>http://192.0.2.10/livehost.wma</en-us>
 </LiveStreamPathURI>
 <StartTime>2026-10-23T20:00:00.000Z</StartTime>
 <EndTime>2026-10-23T22:00:00.000Z</EndTime>
@@ -314,7 +314,7 @@ launch data, a special:
 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
 <EpisodeId>episode</EpisodeId>
 <LiveStreamPathURI type="table">
-<en-us>http://192.0.2.10/livehost.mp3</en-us>
+<en-us>http://192.0.2.10/livehost.wma</en-us>
 </LiveStreamPathURI>
 <StartTime>2026-10-23T20:00:00.000Z</StartTime>
 <EndTime>2026-10-23T21:30:00.000Z</EndTime>
@@ -342,7 +342,7 @@ launch data, a special with artwork:
 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
 <EpisodeId>episode</EpisodeId>
 <LiveStreamPathURI type="table">
-<en-us>http://192.0.2.10/livehost.mp3</en-us>
+<en-us>http://192.0.2.10/livehost.wma</en-us>
 </LiveStreamPathURI>
 <StartTime>2026-10-23T20:00:00.000Z</StartTime>
 <EndTime>2026-10-23T20:30:00.000Z</EndTime>
@@ -370,7 +370,7 @@ launch data without a schedule:
 <xsor:object xmlns:xsor="http://schemas.xbox.com/xsor" xmlns="http://schemas.xbox.com/SBG" name="MergedLaunchData" type="table">
 <EpisodeId>00000000-0000-0000-0000-000000000000</EpisodeId>
 <LiveStreamPathURI type="table">
-<en-us>http://192.0.2.10/livehost.mp3</en-us>
+<en-us>http://192.0.2.10/livehost.wma</en-us>
 </LiveStreamPathURI>
 <StartTime>2026-09-27T12:02:00.000Z</StartTime>
 <EndTime>2026-09-27T14:00:00.000Z</EndTime>
